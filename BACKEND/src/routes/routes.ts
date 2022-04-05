@@ -166,6 +166,26 @@ class IndexRoutes {
     await db.desconectarBD();
   };
 
+  private listarMatriculas = async (req: Request, res: Response) => {
+    await db
+      .conectarBD()
+      .then(async (mensaje) => {
+        const query = await Vehiculos.aggregate(
+          [ {
+            $project: {
+              _id:0,
+              _matricula:1
+         } 
+        } ]
+      );
+        res.json(query);
+      })
+      .catch((mensaje) => {
+        res.send(mensaje);
+      });
+    await db.desconectarBD();
+  };
+
   private listarVehiculo = async (req: Request, res: Response) => {
     await db.conectarBD();
     const matricula = req.params.matricula;
@@ -204,6 +224,7 @@ class IndexRoutes {
     this._router.get("/verReparacion", this.listarReparaciones);
     this._router.get("/verReparacion/:codigo", this.listarReparacion);
     this._router.get("/verVehiculos", this.listarVehiculos);
+    this._router.get("/verVehiculos/matriculas", this.listarMatriculas);
     this._router.get("/verVehiculo/:matricula", this.listarVehiculo);
     // UPDATE
     this._router.put("/updateReparacion/:codigo", this.modificarReparacion);

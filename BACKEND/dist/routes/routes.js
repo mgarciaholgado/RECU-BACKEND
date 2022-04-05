@@ -145,6 +145,23 @@ class IndexRoutes {
             });
             yield database_1.db.desconectarBD();
         });
+        this.listarMatriculas = (req, res) => __awaiter(this, void 0, void 0, function* () {
+            yield database_1.db
+                .conectarBD()
+                .then((mensaje) => __awaiter(this, void 0, void 0, function* () {
+                const query = yield vehiculos_1.Vehiculos.aggregate([{
+                        $project: {
+                            _id: 0,
+                            _matricula: 1
+                        }
+                    }]);
+                res.json(query);
+            }))
+                .catch((mensaje) => {
+                res.send(mensaje);
+            });
+            yield database_1.db.desconectarBD();
+        });
         this.listarVehiculo = (req, res) => __awaiter(this, void 0, void 0, function* () {
             yield database_1.db.conectarBD();
             const matricula = req.params.matricula;
@@ -185,6 +202,7 @@ class IndexRoutes {
         this._router.get("/verReparacion", this.listarReparaciones);
         this._router.get("/verReparacion/:codigo", this.listarReparacion);
         this._router.get("/verVehiculos", this.listarVehiculos);
+        this._router.get("/verVehiculos/matriculas", this.listarMatriculas);
         this._router.get("/verVehiculo/:matricula", this.listarVehiculo);
         // UPDATE
         this._router.put("/updateReparacion/:codigo", this.modificarReparacion);
