@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 
 class DataBase {
 
-    private _cadenaConexion: string = 'mongodb+srv://admin:12345@Mechanic.k6srb.mongodb.net/taller?retryWrites=true&w=majority'
+    private _cadenaConexion: string = 'mongodb+srv://admin:1234@Mechanic.k6srb.mongodb.net/taller?retryWrites=true&w=majority'
     constructor() {
 
     }
