@@ -1,5 +1,6 @@
 import { Request, Response, Router } from "express";
 import { db } from "../database/database";
+import { Clientes } from "../model/clientes";
 import { Empleados, tMecanico } from "../model/empleados";
 import { Reparaciones } from "../model/reparacion";
 import { Vehiculos } from "../model/vehiculos";
@@ -80,6 +81,22 @@ class IndexRoutes {
     await db.desconectarBD();
   };
 
+  private agregarCliente = async (req: Request, res: Response) => {
+    const { dni, nombre, telefono } = req.body;
+    await db.conectarBD();
+    const dSchema = {
+      _dni: dni,
+      _nombre: nombre,
+      _telefono: telefono,
+    };
+    const oSchema = new Clientes(dSchema);
+    await oSchema
+      .save()
+      .then((doc: any) => res.send(doc))
+      .catch((err: any) => res.send("Error: " + err));
+    await db.desconectarBD();
+  };
+
   private modificarReparacion = async (req: Request, res: Response) => {
     await db.conectarBD();
     const code = req.params.codigo;
@@ -110,6 +127,21 @@ class IndexRoutes {
     await db.desconectarBD();
   };
 
+  private modificarCliente = async (req: Request, res: Response) => {
+    await db.conectarBD();
+    const dn = req.params.dni;
+    const {  dni,nombre, telefono } = req.body;
+    await Clientes.findOneAndUpdate(
+      { _dni: dn },
+      { _dni: dni,_nombre: nombre, _telefono: telefono},
+      { new: true }
+    )
+      .then((doc: any) => res.send(doc))
+      .catch((err: any) => res.send("Error: " + err));
+
+    await db.desconectarBD();
+  };
+
   private borrarReparacion = async (req: Request, res: Response) => {
     await db.conectarBD();
     const codigo = req.params.code;
@@ -124,6 +156,16 @@ class IndexRoutes {
     await db.conectarBD();
     const matricula = req.params.matricula;
     await Vehiculos.findOneAndDelete({ _matricula: matricula })
+      .then((doc: any) => res.send(doc))
+      .catch((err: any) => res.send("Error: " + err));
+
+    await db.desconectarBD();
+  };
+
+  private borrarCliente = async (req: Request, res: Response) => {
+    await db.conectarBD();
+    const dni = req.params.dni;
+    await Vehiculos.findOneAndDelete({ _dni: dni })
       .then((doc: any) => res.send(doc))
       .catch((err: any) => res.send("Error: " + err));
 
@@ -166,18 +208,11 @@ class IndexRoutes {
     await db.desconectarBD();
   };
 
-  private listarMatriculas = async (req: Request, res: Response) => {
+  private listarClientes = async (req: Request, res: Response) => {
     await db
       .conectarBD()
       .then(async (mensaje) => {
-        const query = await Vehiculos.aggregate(
-          [ {
-            $project: {
-              _id:0,
-              _matricula:1
-         } 
-        } ]
-      );
+        const query = await Clientes.find({});
         res.json(query);
       })
       .catch((mensaje) => {
@@ -190,6 +225,16 @@ class IndexRoutes {
     await db.conectarBD();
     const matricula = req.params.matricula;
     await Vehiculos.findOne({ _matricula: matricula })
+      .then((doc: any) => res.send(doc))
+      .catch((err: any) => res.send("Error: " + err));
+
+    await db.desconectarBD();
+  };
+
+  private listarCliente = async (req: Request, res: Response) => {
+    await db.conectarBD();
+    const dni = req.params.dni;
+    await Clientes.findOne({ _dni: dni })
       .then((doc: any) => res.send(doc))
       .catch((err: any) => res.send("Error: " + err));
 
@@ -219,19 +264,24 @@ class IndexRoutes {
     this._router.post("/register", this.registroUser);
     this._router.post("/addReparacion", this.agregarReparacion);
     this._router.post("/addVehiculo", this.agregarVehiculo);
+    this._router.post("/addCliente", this.agregarCliente);
+
     // GET
     this._router.get("/empleados/todos", this.getEmpleados);
     this._router.get("/verReparacion", this.listarReparaciones);
     this._router.get("/verReparacion/:codigo", this.listarReparacion);
     this._router.get("/verVehiculos", this.listarVehiculos);
-    this._router.get("/verVehiculos/matriculas", this.listarMatriculas);
+    this._router.get("/verClientes", this.listarClientes);
     this._router.get("/verVehiculo/:matricula", this.listarVehiculo);
+    this._router.get("/verCliente/:dni", this.listarCliente);
     // UPDATE
     this._router.put("/updateReparacion/:codigo", this.modificarReparacion);
     this._router.put("/updateVehiculo/:matricula", this.modificarVehiculo);
+    this._router.put("/updateCliente/:dni", this.modificarCliente);
     // DELETE
     this._router.delete("/deleteReparacion/:code", this.borrarReparacion);
     this._router.delete("/deleteVehiculo/:matricula", this.borrarVehiculo);
+    this._router.delete("/deleteCliente/:dni", this.borrarCliente);
     this._router.get("/");
   }
 }
