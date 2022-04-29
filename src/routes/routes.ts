@@ -165,7 +165,7 @@ class IndexRoutes {
   private borrarCliente = async (req: Request, res: Response) => {
     await db.conectarBD();
     const dni = req.params.dni;
-    await Vehiculos.findOneAndDelete({ _dni: dni })
+    await Clientes.findOneAndDelete({ _dni: dni })
       .then((doc: any) => res.send(doc))
       .catch((err: any) => res.send("Error: " + err));
 

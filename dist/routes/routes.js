@@ -141,7 +141,7 @@ class IndexRoutes {
         this.borrarCliente = (req, res) => __awaiter(this, void 0, void 0, function* () {
             yield database_1.db.conectarBD();
             const dni = req.params.dni;
-            yield vehiculos_1.Vehiculos.findOneAndDelete({ _dni: dni })
+            yield clientes_1.Clientes.findOneAndDelete({ _dni: dni })
                 .then((doc) => res.send(doc))
                 .catch((err) => res.send("Error: " + err));
             yield database_1.db.desconectarBD();
