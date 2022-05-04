@@ -65,9 +65,10 @@ class IndexRoutes {
             yield database_1.db.desconectarBD();
         });
         this.agregarVehiculo = (req, res) => __awaiter(this, void 0, void 0, function* () {
-            const { matricula, marca, color, tipoVehiculo } = req.body;
+            const { DNIpropietario, matricula, marca, color, tipoVehiculo } = req.body;
             yield database_1.db.conectarBD();
             const dSchema = {
+                _DNIpropietario: DNIpropietario,
                 _matricula: matricula,
                 _marca: marca,
                 _color: color,
@@ -107,8 +108,8 @@ class IndexRoutes {
         this.modificarVehiculo = (req, res) => __awaiter(this, void 0, void 0, function* () {
             yield database_1.db.conectarBD();
             const mat = req.params.matricula;
-            const { matricula, marca, color, tipoVehiculo } = req.body;
-            yield vehiculos_1.Vehiculos.findOneAndUpdate({ _matricula: mat }, { _matricula: matricula, _marca: marca, _color: color, _tipoVehiculo: tipoVehiculo }, { new: true })
+            const { DNIpropietario, matricula, marca, color, tipoVehiculo } = req.body;
+            yield vehiculos_1.Vehiculos.findOneAndUpdate({ _matricula: mat }, { _DNIpropietario: DNIpropietario, _matricula: matricula, _marca: marca, _color: color, _tipoVehiculo: tipoVehiculo }, { new: true })
                 .then((doc) => res.send(doc))
                 .catch((err) => res.send("Error: " + err));
             yield database_1.db.desconectarBD();

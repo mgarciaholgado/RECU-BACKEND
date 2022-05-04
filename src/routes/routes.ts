@@ -65,9 +65,10 @@ class IndexRoutes {
   };
 
   private agregarVehiculo = async (req: Request, res: Response) => {
-    const { matricula, marca, color, tipoVehiculo } = req.body;
+    const { DNIpropietario,matricula, marca, color, tipoVehiculo } = req.body;
     await db.conectarBD();
     const dSchema = {
+      _DNIpropietario: DNIpropietario,
       _matricula: matricula,
       _marca: marca,
       _color: color,
@@ -115,10 +116,10 @@ class IndexRoutes {
   private modificarVehiculo = async (req: Request, res: Response) => {
     await db.conectarBD();
     const mat = req.params.matricula;
-    const {  matricula,marca, color, tipoVehiculo } = req.body;
+    const {  DNIpropietario,matricula,marca, color, tipoVehiculo } = req.body;
     await Vehiculos.findOneAndUpdate(
       { _matricula: mat },
-      { _matricula: matricula,_marca: marca, _color: color,  _tipoVehiculo: tipoVehiculo},
+      { _DNIpropietario: DNIpropietario,_matricula: matricula,_marca: marca, _color: color,  _tipoVehiculo: tipoVehiculo},
       { new: true }
     )
       .then((doc: any) => res.send(doc))

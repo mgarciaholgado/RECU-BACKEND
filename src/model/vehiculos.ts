@@ -1,6 +1,9 @@
 import { Schema, model } from "mongoose";
 
 const vehiculoSchema = new Schema({
+  _DNIpropietario:{
+    type:String
+  },
   _matricula: {
   type: String,
     },

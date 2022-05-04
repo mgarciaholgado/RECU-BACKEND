@@ -1,11 +1,13 @@
 export  class Vehiculo {
+    private _DNIpropietario: string;
     private _matricula: string; 
     private _marca: string;
     private _color: string;
     private _tipoVehiculo: string;
 
 
-    constructor(matricula: string, marca: string, color: string, tipoVehiculo:string) {
+    constructor(DNIpropietario: string, matricula: string, marca: string, color: string, tipoVehiculo:string) {
+        this._DNIpropietario = DNIpropietario
         this._matricula = matricula;
         this._marca = marca;
         this._color = color;
@@ -13,6 +15,10 @@ export  class Vehiculo {
     }
 
     //     GETTERS AND SETTERS      //
+
+    get DNIpropietario() {
+        return this._DNIpropietario
+    }
 
     get matricula() {
         return this._matricula
@@ -24,7 +30,6 @@ export  class Vehiculo {
         return this._color
     }
     
-
     get tipoVehiculo(){
         return this._tipoVehiculo
     }

@@ -3,6 +3,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Vehiculos = void 0;
 const mongoose_1 = require("mongoose");
 const vehiculoSchema = new mongoose_1.Schema({
+    _DNIpropietario: {
+        type: String
+    },
     _matricula: {
         type: String,
     },
