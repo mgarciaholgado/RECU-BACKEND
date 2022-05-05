@@ -1,4 +1,5 @@
 import { Request, Response, Router } from "express";
+import { Empleado } from "../classes/empleados/empleado";
 import { db } from "../database/database";
 import { Clientes } from "../model/clientes";
 import { Empleados, tMecanico } from "../model/empleados";
@@ -29,23 +30,41 @@ class IndexRoutes {
     await db.desconectarBD();
   };
 
-  private agregarEmpleado = async (req: Request, res: Response) => {
-    const { nombre, sueldo, tipoEmpleado, tipoMec, horasExtra } = req.body;
-    await db.conectarBD();
+  private agregarMecanico = async (req: Request, res: Response) => {
+    const { dni, nombre, tipoEmpleado, fechaContratacion, sueldoMes } = req.body
+    await db.conectarBD()
     const dSchema = {
-      _nombre: nombre,
-      _sueldo: sueldo,
-      _tipoEmpleado: tipoEmpleado,
-      _tipoMec: tipoMec,
-      _horasExtra: horasExtra,
-    };
-    const oSchema = new Empleados(dSchema);
-    await oSchema
-      .save()
-      .then((doc: any) => res.send(doc))
-      .catch((err: any) => res.send("Error: " + err));
-    await db.desconectarBD();
-  };
+        _dni: dni,
+        _nombre: nombre,
+        _tipoEmpleado: tipoEmpleado,
+        _fechaContratacion: fechaContratacion,
+        _sueldoMes: sueldoMes
+    }
+    const oSchema = new Empleados(dSchema)
+    await oSchema.save()
+        .then((doc: any) => res.send('Has guardado el archivo:\n' + doc))
+        .catch((err: any) => res.send('Error: ' + err))
+
+    db.desconectarBD()
+}
+
+private agregarPintor = async (req: Request, res: Response) => {
+  const { dni, nombre, tipoEmpleado, fechaContratacion, precioHora } = req.body
+  await db.conectarBD()
+  const dSchema = {
+    _dni: dni,
+    _nombre: nombre,
+    _tipoEmpleado: tipoEmpleado,
+    _fechaContratacion: fechaContratacion,
+    _precioHora: precioHora
+  }
+  const oSchema = new Empleados(dSchema)
+  await oSchema.save()
+      .then((doc: any) => res.send('Has guardado el archivo:\n' + doc))
+      .catch((err: any) => res.send('Error: ' + err))
+
+  db.desconectarBD()
+}
 
   private agregarReparacion = async (req: Request, res: Response) => {
     const { codigo, matricula, nombre, coste } = req.body;
@@ -261,11 +280,12 @@ class IndexRoutes {
 
   routes() {
     // POST
-    this._router.post("/empleados", this.agregarEmpleado);
     this._router.post("/register", this.registroUser);
     this._router.post("/addReparacion", this.agregarReparacion);
     this._router.post("/addVehiculo", this.agregarVehiculo);
     this._router.post("/addCliente", this.agregarCliente);
+    this._router.post("/addMecanico", this.agregarMecanico);
+    this._router.post("/addPintor", this.agregarPintor);
 
     // GET
     this._router.get("/empleados/todos", this.getEmpleados);

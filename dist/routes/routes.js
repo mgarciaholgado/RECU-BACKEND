@@ -31,22 +31,37 @@ class IndexRoutes {
             });
             yield database_1.db.desconectarBD();
         });
-        this.agregarEmpleado = (req, res) => __awaiter(this, void 0, void 0, function* () {
-            const { nombre, sueldo, tipoEmpleado, tipoMec, horasExtra } = req.body;
+        this.agregarMecanico = (req, res) => __awaiter(this, void 0, void 0, function* () {
+            const { dni, nombre, tipoEmpleado, fechaContratacion, sueldoMes } = req.body;
             yield database_1.db.conectarBD();
             const dSchema = {
+                _dni: dni,
                 _nombre: nombre,
-                _sueldo: sueldo,
                 _tipoEmpleado: tipoEmpleado,
-                _tipoMec: tipoMec,
-                _horasExtra: horasExtra,
+                _fechaContratacion: fechaContratacion,
+                _sueldoMes: sueldoMes
             };
             const oSchema = new empleados_1.Empleados(dSchema);
-            yield oSchema
-                .save()
-                .then((doc) => res.send(doc))
-                .catch((err) => res.send("Error: " + err));
-            yield database_1.db.desconectarBD();
+            yield oSchema.save()
+                .then((doc) => res.send('Has guardado el archivo:\n' + doc))
+                .catch((err) => res.send('Error: ' + err));
+            database_1.db.desconectarBD();
+        });
+        this.agregarPintor = (req, res) => __awaiter(this, void 0, void 0, function* () {
+            const { dni, nombre, tipoEmpleado, fechaContratacion, precioHora } = req.body;
+            yield database_1.db.conectarBD();
+            const dSchema = {
+                _dni: dni,
+                _nombre: nombre,
+                _tipoEmpleado: tipoEmpleado,
+                _fechaContratacion: fechaContratacion,
+                _precioHora: precioHora
+            };
+            const oSchema = new empleados_1.Empleados(dSchema);
+            yield oSchema.save()
+                .then((doc) => res.send('Has guardado el archivo:\n' + doc))
+                .catch((err) => res.send('Error: ' + err));
+            database_1.db.desconectarBD();
         });
         this.agregarReparacion = (req, res) => __awaiter(this, void 0, void 0, function* () {
             const { codigo, matricula, nombre, coste } = req.body;
@@ -230,11 +245,12 @@ class IndexRoutes {
     }
     routes() {
         // POST
-        this._router.post("/empleados", this.agregarEmpleado);
         this._router.post("/register", this.registroUser);
         this._router.post("/addReparacion", this.agregarReparacion);
         this._router.post("/addVehiculo", this.agregarVehiculo);
         this._router.post("/addCliente", this.agregarCliente);
+        this._router.post("/addMecanico", this.agregarMecanico);
+        this._router.post("/addPintor", this.agregarPintor);
         // GET
         this._router.get("/empleados/todos", this.getEmpleados);
         this._router.get("/verReparacion", this.listarReparaciones);

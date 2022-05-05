@@ -9,17 +9,11 @@ const empleadoSchema = new mongoose_1.Schema({
     _nombre: {
         type: String,
     },
-    _password: {
-        type: String,
-    },
     _tipoEmpleado: {
         type: String,
     },
-    _empresaContratista: {
-        type: String,
-    },
-    _horasExtra: {
-        type: Number,
+    _fechaContratacion: {
+        type: Date,
     }
 });
 exports.Empleados = (0, mongoose_1.model)("empleados", empleadoSchema);

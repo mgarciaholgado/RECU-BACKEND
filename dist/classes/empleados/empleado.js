@@ -2,11 +2,11 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Empleado = void 0;
 class Empleado {
-    constructor(dni, nombre, telefono, sueldo) {
+    constructor(dni, nombre, tipoEmpleado, fechaContratacion) {
         this._dni = dni;
         this._nombre = nombre;
-        this._telefono = telefono;
-        this._sueldo = sueldo;
+        this._tipoEmpleado = tipoEmpleado;
+        this._fechaContratacion = fechaContratacion;
     }
     //     GETTERS AND SETTERS      //
     get dni() {
@@ -15,11 +15,11 @@ class Empleado {
     get nombre() {
         return this._nombre;
     }
-    get sueldo() {
-        return this._sueldo;
+    get tipoEmpleado() {
+        return this._tipoEmpleado;
     }
-    get telefono() {
-        return this._telefono;
+    get fechaContratacion() {
+        return this._fechaContratacion;
     }
 }
 exports.Empleado = Empleado;

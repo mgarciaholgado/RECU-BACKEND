@@ -1,26 +1,18 @@
 import { Empleado } from "./empleado";
 
 export class Mecanico extends Empleado {
-    _tipoMec: string;
-    _horasExtra: Number;
+   private _sueldoMes:number;
 
 
-    constructor(dni: string, nombre: string, telefono: number, sueldo: number, tipoMec:string, horasExtras:number) {
+    constructor(dni: string, nombre: string, tipoEmpleado:string, fechaContratacion: Date, sueldoMes:number) {
         
-      
-      
-        super(dni,nombre,telefono,sueldo);
-        this._tipoMec = tipoMec;
-        this._horasExtra = horasExtras;
+        super(dni,nombre,tipoEmpleado,fechaContratacion);
+        this._sueldoMes = sueldoMes;
     }
 
     //     GETTERS AND SETTERS      //
 
-    get tipoMec(){
-        return this._tipoMec
-    }
-
-    get horasExtra(){
-        return this._horasExtra
+    get sueldoMes(){
+        return this._sueldoMes
     }
 }
