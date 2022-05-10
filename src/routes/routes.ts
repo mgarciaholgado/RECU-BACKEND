@@ -2,7 +2,7 @@ import { Request, Response, Router } from "express";
 import { Empleado } from "../classes/empleados/empleado";
 import { db } from "../database/database";
 import { Clientes } from "../model/clientes";
-import { Empleados, tMecanico } from "../model/empleados";
+import { Empleados } from "../model/empleados";
 import { Reparaciones } from "../model/reparacion";
 import { Vehiculos } from "../model/vehiculos";
 
@@ -17,11 +17,25 @@ class IndexRoutes {
   }
 
   private getEmpleados = async (req: Request, res: Response) => {
-    const nombre = req.params.nombre;
     await db
       .conectarBD()
       .then(async (mensaje) => {
         const query = await Empleados.find({});
+        res.json(query);
+      })
+      .catch((mensaje) => {
+        res.send(mensaje);
+      });
+    await db.desconectarBD();
+  };
+
+  private getMecanicos = async (req: Request, res: Response) => {
+    await db
+      .conectarBD()
+      .then(async (mensaje) => {
+        const query = await Empleados.aggregate(
+          [ { $match : { _tipoEmpleado : "mecanico" } } ]
+      );
         res.json(query);
       })
       .catch((mensaje) => {
@@ -192,6 +206,16 @@ private agregarPintor = async (req: Request, res: Response) => {
     await db.desconectarBD();
   };
 
+  private borrarEmpleado = async (req: Request, res: Response) => {
+    await db.conectarBD();
+    const dni = req.params.dni;
+    await Empleados.findOneAndDelete({ _dni: dni })
+      .then((doc: any) => res.send(doc))
+      .catch((err: any) => res.send("Error: " + err));
+
+    await db.desconectarBD();
+  };
+
   private listarReparaciones = async (req: Request, res: Response) => {
     await db
       .conectarBD()
@@ -288,7 +312,8 @@ private agregarPintor = async (req: Request, res: Response) => {
     this._router.post("/addPintor", this.agregarPintor);
 
     // GET
-    this._router.get("/empleados/todos", this.getEmpleados);
+    this._router.get("/verEmpleados", this.getEmpleados);
+    this._router.get("/verMecanicos", this.getMecanicos);
     this._router.get("/verReparacion", this.listarReparaciones);
     this._router.get("/verReparacion/:codigo", this.listarReparacion);
     this._router.get("/verVehiculos", this.listarVehiculos);
@@ -303,6 +328,7 @@ private agregarPintor = async (req: Request, res: Response) => {
     this._router.delete("/deleteReparacion/:code", this.borrarReparacion);
     this._router.delete("/deleteVehiculo/:matricula", this.borrarVehiculo);
     this._router.delete("/deleteCliente/:dni", this.borrarCliente);
+    this._router.delete("/deleteEmpleado/:dni", this.borrarEmpleado);
     this._router.get("/");
   }
 }

@@ -19,11 +19,22 @@ const vehiculos_1 = require("../model/vehiculos");
 class IndexRoutes {
     constructor() {
         this.getEmpleados = (req, res) => __awaiter(this, void 0, void 0, function* () {
-            const nombre = req.params.nombre;
             yield database_1.db
                 .conectarBD()
                 .then((mensaje) => __awaiter(this, void 0, void 0, function* () {
                 const query = yield empleados_1.Empleados.find({});
+                res.json(query);
+            }))
+                .catch((mensaje) => {
+                res.send(mensaje);
+            });
+            yield database_1.db.desconectarBD();
+        });
+        this.getMecanicos = (req, res) => __awaiter(this, void 0, void 0, function* () {
+            yield database_1.db
+                .conectarBD()
+                .then((mensaje) => __awaiter(this, void 0, void 0, function* () {
+                const query = yield empleados_1.Empleados.aggregate([{ $match: { _tipoEmpleado: "mecanico" } }]);
                 res.json(query);
             }))
                 .catch((mensaje) => {
@@ -162,6 +173,14 @@ class IndexRoutes {
                 .catch((err) => res.send("Error: " + err));
             yield database_1.db.desconectarBD();
         });
+        this.borrarEmpleado = (req, res) => __awaiter(this, void 0, void 0, function* () {
+            yield database_1.db.conectarBD();
+            const dni = req.params.dni;
+            yield empleados_1.Empleados.findOneAndDelete({ _dni: dni })
+                .then((doc) => res.send(doc))
+                .catch((err) => res.send("Error: " + err));
+            yield database_1.db.desconectarBD();
+        });
         this.listarReparaciones = (req, res) => __awaiter(this, void 0, void 0, function* () {
             yield database_1.db
                 .conectarBD()
@@ -252,7 +271,8 @@ class IndexRoutes {
         this._router.post("/addMecanico", this.agregarMecanico);
         this._router.post("/addPintor", this.agregarPintor);
         // GET
-        this._router.get("/empleados/todos", this.getEmpleados);
+        this._router.get("/verEmpleados", this.getEmpleados);
+        this._router.get("/verMecanicos", this.getMecanicos);
         this._router.get("/verReparacion", this.listarReparaciones);
         this._router.get("/verReparacion/:codigo", this.listarReparacion);
         this._router.get("/verVehiculos", this.listarVehiculos);
@@ -267,6 +287,7 @@ class IndexRoutes {
         this._router.delete("/deleteReparacion/:code", this.borrarReparacion);
         this._router.delete("/deleteVehiculo/:matricula", this.borrarVehiculo);
         this._router.delete("/deleteCliente/:dni", this.borrarCliente);
+        this._router.delete("/deleteEmpleado/:dni", this.borrarEmpleado);
         this._router.get("/");
     }
 }

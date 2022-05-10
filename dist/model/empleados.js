@@ -14,6 +14,12 @@ const empleadoSchema = new mongoose_1.Schema({
     },
     _fechaContratacion: {
         type: Date,
+    },
+    _sueldoMes: {
+        type: Number
+    },
+    _precioHora: {
+        type: Number
     }
 });
 exports.Empleados = (0, mongoose_1.model)("empleados", empleadoSchema);

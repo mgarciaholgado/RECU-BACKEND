@@ -12,10 +12,15 @@ const empleadoSchema = new Schema({
   },
   _fechaContratacion:{
       type: Date,
+  },
+  _sueldoMes:{
+    type: Number
+  },
+  _precioHora:{
+    type: Number
   }
   
 });
-export const Empleados = model("empleados", empleadoSchema);
 
 export type tMecanico = {
   _dni: string;
@@ -32,5 +37,7 @@ export type tPintor = {
   _fechaContratacion: Date;
   _precioHora: number;
   };
+
+export const Empleados = model("empleados", empleadoSchema);
 
 
