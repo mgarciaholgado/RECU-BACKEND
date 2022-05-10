@@ -42,6 +42,18 @@ class IndexRoutes {
             });
             yield database_1.db.desconectarBD();
         });
+        this.getPintores = (req, res) => __awaiter(this, void 0, void 0, function* () {
+            yield database_1.db
+                .conectarBD()
+                .then((mensaje) => __awaiter(this, void 0, void 0, function* () {
+                const query = yield empleados_1.Empleados.aggregate([{ $match: { _tipoEmpleado: "pintor" } }]);
+                res.json(query);
+            }))
+                .catch((mensaje) => {
+                res.send(mensaje);
+            });
+            yield database_1.db.desconectarBD();
+        });
         this.agregarMecanico = (req, res) => __awaiter(this, void 0, void 0, function* () {
             const { dni, nombre, tipoEmpleado, fechaContratacion, sueldoMes } = req.body;
             yield database_1.db.conectarBD();
@@ -273,6 +285,7 @@ class IndexRoutes {
         // GET
         this._router.get("/verEmpleados", this.getEmpleados);
         this._router.get("/verMecanicos", this.getMecanicos);
+        this._router.get("/verPintores", this.getPintores);
         this._router.get("/verReparacion", this.listarReparaciones);
         this._router.get("/verReparacion/:codigo", this.listarReparacion);
         this._router.get("/verVehiculos", this.listarVehiculos);

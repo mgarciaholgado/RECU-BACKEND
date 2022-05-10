@@ -1,7 +1,7 @@
 import { Empleado } from "./empleado";
 
 export class Pintor extends Empleado {
-    _precioHora: Number;
+   private _precioHora: Number;
     
 
     constructor(dni: string, nombre: string, tipoEmpleado:string, fechaContratacion: Date, precioHora:number) {

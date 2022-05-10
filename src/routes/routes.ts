@@ -44,6 +44,21 @@ class IndexRoutes {
     await db.desconectarBD();
   };
 
+  private getPintores = async (req: Request, res: Response) => {
+    await db
+      .conectarBD()
+      .then(async (mensaje) => {
+        const query = await Empleados.aggregate(
+          [ { $match : { _tipoEmpleado : "pintor" } } ]
+      );
+        res.json(query);
+      })
+      .catch((mensaje) => {
+        res.send(mensaje);
+      });
+    await db.desconectarBD();
+  };
+
   private agregarMecanico = async (req: Request, res: Response) => {
     const { dni, nombre, tipoEmpleado, fechaContratacion, sueldoMes } = req.body
     await db.conectarBD()
@@ -314,6 +329,7 @@ private agregarPintor = async (req: Request, res: Response) => {
     // GET
     this._router.get("/verEmpleados", this.getEmpleados);
     this._router.get("/verMecanicos", this.getMecanicos);
+    this._router.get("/verPintores", this.getPintores);
     this._router.get("/verReparacion", this.listarReparaciones);
     this._router.get("/verReparacion/:codigo", this.listarReparacion);
     this._router.get("/verVehiculos", this.listarVehiculos);
