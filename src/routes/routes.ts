@@ -1,5 +1,6 @@
 import { Request, Response, Router } from "express";
 import { Empleado } from "../classes/empleados/empleado";
+import { Pintor } from "../classes/empleados/pintor";
 import { db } from "../database/database";
 import { Clientes } from "../model/clientes";
 import { Empleados } from "../model/empleados";
@@ -60,40 +61,42 @@ class IndexRoutes {
   };
 
   private agregarMecanico = async (req: Request, res: Response) => {
-    const { dni, nombre, tipoEmpleado, fechaContratacion, sueldoMes } = req.body
-    await db.conectarBD()
+    const { dni, nombre, tipoEmpleado, fechaContratacion, sueldoMes, horasExtra } = req.body;
+    await db.conectarBD();
     const dSchema = {
-        _dni: dni,
-        _nombre: nombre,
-        _tipoEmpleado: tipoEmpleado,
-        _fechaContratacion: fechaContratacion,
-        _sueldoMes: sueldoMes
-    }
-    const oSchema = new Empleados(dSchema)
-    await oSchema.save()
-        .then((doc: any) => res.send('Has guardado el archivo:\n' + doc))
-        .catch((err: any) => res.send('Error: ' + err))
-
-    db.desconectarBD()
-}
-
-private agregarPintor = async (req: Request, res: Response) => {
-  const { dni, nombre, tipoEmpleado, fechaContratacion, precioHora } = req.body
-  await db.conectarBD()
-  const dSchema = {
     _dni: dni,
     _nombre: nombre,
     _tipoEmpleado: tipoEmpleado,
     _fechaContratacion: fechaContratacion,
-    _precioHora: precioHora
-  }
-  const oSchema = new Empleados(dSchema)
-  await oSchema.save()
-      .then((doc: any) => res.send('Has guardado el archivo:\n' + doc))
-      .catch((err: any) => res.send('Error: ' + err))
+    _sueldoMes: sueldoMes,
+    _horasExtra: horasExtra
+    };
+    const oSchema = new Empleados(dSchema);
+    await oSchema
+      .save()
+      .then((doc: any) => res.send(doc))
+      .catch((err: any) => res.send("Error: " + err));
+    await db.desconectarBD();
+  };
 
-  db.desconectarBD()
-}
+  private agregarPintor = async (req: Request, res: Response) => {
+    const { dni, nombre, tipoEmpleado, fechaContratacion, sueldoMes, empresaContratista } = req.body;
+    await db.conectarBD();
+    const dSchema = {
+    _dni: dni,
+    _nombre: nombre,
+    _tipoEmpleado: tipoEmpleado,
+    _fechaContratacion: fechaContratacion,
+    _sueldoMes: sueldoMes,
+    _empresaContratista: empresaContratista
+    };
+    const oSchema = new Empleados(dSchema);
+    await oSchema
+      .save()
+      .then((doc: any) => res.send(doc))
+      .catch((err: any) => res.send("Error: " + err));
+    await db.desconectarBD();
+  };
 
   private agregarReparacion = async (req: Request, res: Response) => {
     const { codigo, matricula, nombre, coste } = req.body;

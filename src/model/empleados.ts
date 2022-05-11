@@ -16,8 +16,11 @@ const empleadoSchema = new Schema({
   _sueldoMes:{
     type: Number
   },
-  _precioHora:{
+  _horasExtra:{
     type: Number
+  },
+  _empresaContratista:{
+    type: String
   }
   
 });

@@ -55,36 +55,40 @@ class IndexRoutes {
             yield database_1.db.desconectarBD();
         });
         this.agregarMecanico = (req, res) => __awaiter(this, void 0, void 0, function* () {
-            const { dni, nombre, tipoEmpleado, fechaContratacion, sueldoMes } = req.body;
+            const { dni, nombre, tipoEmpleado, fechaContratacion, sueldoMes, horasExtra } = req.body;
             yield database_1.db.conectarBD();
             const dSchema = {
                 _dni: dni,
                 _nombre: nombre,
                 _tipoEmpleado: tipoEmpleado,
                 _fechaContratacion: fechaContratacion,
-                _sueldoMes: sueldoMes
+                _sueldoMes: sueldoMes,
+                _horasExtra: horasExtra
             };
             const oSchema = new empleados_1.Empleados(dSchema);
-            yield oSchema.save()
-                .then((doc) => res.send('Has guardado el archivo:\n' + doc))
-                .catch((err) => res.send('Error: ' + err));
-            database_1.db.desconectarBD();
+            yield oSchema
+                .save()
+                .then((doc) => res.send(doc))
+                .catch((err) => res.send("Error: " + err));
+            yield database_1.db.desconectarBD();
         });
         this.agregarPintor = (req, res) => __awaiter(this, void 0, void 0, function* () {
-            const { dni, nombre, tipoEmpleado, fechaContratacion, precioHora } = req.body;
+            const { dni, nombre, tipoEmpleado, fechaContratacion, sueldoMes, empresaContratista } = req.body;
             yield database_1.db.conectarBD();
             const dSchema = {
                 _dni: dni,
                 _nombre: nombre,
                 _tipoEmpleado: tipoEmpleado,
                 _fechaContratacion: fechaContratacion,
-                _precioHora: precioHora
+                _sueldoMes: sueldoMes,
+                _empresaContratista: empresaContratista
             };
             const oSchema = new empleados_1.Empleados(dSchema);
-            yield oSchema.save()
-                .then((doc) => res.send('Has guardado el archivo:\n' + doc))
-                .catch((err) => res.send('Error: ' + err));
-            database_1.db.desconectarBD();
+            yield oSchema
+                .save()
+                .then((doc) => res.send(doc))
+                .catch((err) => res.send("Error: " + err));
+            yield database_1.db.desconectarBD();
         });
         this.agregarReparacion = (req, res) => __awaiter(this, void 0, void 0, function* () {
             const { codigo, matricula, nombre, coste } = req.body;

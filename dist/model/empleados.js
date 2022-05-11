@@ -18,8 +18,11 @@ const empleadoSchema = new mongoose_1.Schema({
     _sueldoMes: {
         type: Number
     },
-    _precioHora: {
+    _horasExtra: {
         type: Number
+    },
+    _empresaContratista: {
+        type: String
     }
 });
 exports.Empleados = (0, mongoose_1.model)("empleados", empleadoSchema);
