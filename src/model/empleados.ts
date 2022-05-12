@@ -26,13 +26,13 @@ const empleadoSchema = new Schema({
 });
 
 export type tEmpleado = {
-  _dni: string | null;
-  _nombre: string | null;
-  _tipoEmpleado: string | null;
-  _fechaContratacion: Date | null;
-  _sueldoMes: number | null;
-  _horasExtra: number | null;
-  _empresaContratista:number | null;
+  _dni: string;
+  _nombre: string;
+  _tipoEmpleado: string;
+  _fechaContratacion: Date;
+  _sueldoMes: number;
+  _horasExtra: number;
+  _empresaContratista:string;
 };
 
 export type tEmpleado2 = {
@@ -42,7 +42,7 @@ export type tEmpleado2 = {
   _fechaContratacion: Date;
   _sueldoMes: number;
   _horasExtra: number;
-  _empresaContratista:number;
+  _empresaContratista:string;
 };
 
 export type tMecanico = {
@@ -68,7 +68,8 @@ export type tPintor = {
   _nombre: string;
   _tipoEmpleado: string;
   _fechaContratacion: Date;
-  _precioHora: number;
+  _sueldoMes: number;
+  _empresaContratista:string;
   };
 
   export type tSalario = {
@@ -77,6 +78,13 @@ export type tPintor = {
    _sueldoTotal: number | null;
     
     };  
+
+    export type tSalario2 = {
+      _dni: string | null;
+      _nombre: string | null;
+     _sueldoTotal: Number | null;
+      
+      }; 
 
 export const Empleados = model("empleados", empleadoSchema);
 

@@ -12,6 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.routes = void 0;
 const express_1 = require("express");
 const mecanico_1 = require("../classes/empleados/mecanico");
+const pintor_1 = require("../classes/empleados/pintor");
 const database_1 = require("../database/database");
 const clientes_1 = require("../model/clientes");
 const empleados_1 = require("../model/empleados");
@@ -243,14 +244,27 @@ class IndexRoutes {
         });
         this.calcularSueldoAño = (req, res) => __awaiter(this, void 0, void 0, function* () {
             yield database_1.db.conectarBD();
-            const dni = req.params.dni;
             let tmpEmpleado;
             let dEmpleado;
             let arraySueldo = [];
-            const query = yield empleados_1.Empleados.aggregate([{ $match: { _tipoEmpleado: "mecanico" } }]);
+            const query = yield empleados_1.Empleados.find({});
             for (dEmpleado of query) {
                 if (dEmpleado._tipoEmpleado == 'mecanico') {
                     tmpEmpleado = new mecanico_1.Mecanico(dEmpleado._dni, dEmpleado._nombre, dEmpleado._fechaContratacion, dEmpleado._sueldoMes, dEmpleado._horasExtra);
+                    let salarioT = 0;
+                    salarioT = tmpEmpleado.calcularSueldoAño();
+                    let dSalario = {
+                        _dni: null,
+                        _nombre: null,
+                        _sueldoTotal: null
+                    };
+                    dSalario._dni = tmpEmpleado.dni;
+                    dSalario._nombre = tmpEmpleado.nombre;
+                    dSalario._sueldoTotal = salarioT;
+                    arraySueldo.push(dSalario);
+                }
+                else if (dEmpleado._tipoEmpleado == 'pintor') {
+                    tmpEmpleado = new pintor_1.Pintor(dEmpleado._dni, dEmpleado._nombre, dEmpleado._fechaContratacion, dEmpleado._sueldoMes, dEmpleado._empresaContratista);
                     let salarioT = 0;
                     salarioT = tmpEmpleado.calcularSueldoAño();
                     let dSalario = {

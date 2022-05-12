@@ -11,5 +11,18 @@ class Pintor extends empleado_1.Empleado {
     get empresaContratista() {
         return this._empresaContratista;
     }
+    calcularSueldoAño() {
+        let sueldoAño = super.calcularSueldoAño();
+        if (this._empresaContratista == 'CEYDE PINTORES') {
+            sueldoAño = sueldoAño + 350;
+        }
+        else if (this._empresaContratista == 'PINTURAS SEVILLA') {
+            sueldoAño = sueldoAño + 100;
+        }
+        else if (this._empresaContratista == 'BENITO BRICOMARK') {
+            sueldoAño = sueldoAño + 350;
+        }
+        return Math.round(sueldoAño);
+    }
 }
 exports.Pintor = Pintor;

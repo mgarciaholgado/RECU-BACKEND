@@ -4,7 +4,7 @@ import { Mecanico } from "../classes/empleados/mecanico";
 import { Pintor } from "../classes/empleados/pintor";
 import { db } from "../database/database";
 import { Clientes } from "../model/clientes";
-import { Empleados, tEmpleado2, tMecanico, tMecanico2, tSalario } from "../model/empleados";
+import { Empleados, tEmpleado, tEmpleado2, tMecanico, tMecanico2, tSalario } from "../model/empleados";
 import { Reparaciones } from "../model/reparacion";
 import { Vehiculos } from "../model/vehiculos";
 
@@ -289,14 +289,11 @@ class IndexRoutes {
 
   private calcularSueldoAño = async (req: Request, res: Response) => {
     await db.conectarBD();
-    const dni = req.params.dni;
     let tmpEmpleado: Empleado
-    let dEmpleado: tEmpleado2
+    let dEmpleado: tEmpleado
     let arraySueldo: Array<tSalario> = []
 
-    const query = await Empleados.aggregate(
-      [ { $match : { _tipoEmpleado : "mecanico" } } ]
-  );
+    const query = await Empleados.find({})
       for(dEmpleado of query){
         if (dEmpleado._tipoEmpleado == 'mecanico') {
           tmpEmpleado = new Mecanico(
@@ -316,6 +313,28 @@ class IndexRoutes {
 
           }
 
+          dSalario._dni = tmpEmpleado.dni
+          dSalario._nombre = tmpEmpleado.nombre
+          dSalario._sueldoTotal = salarioT
+          arraySueldo.push(dSalario)
+
+        }else if(dEmpleado._tipoEmpleado == 'pintor'){
+          tmpEmpleado = new Pintor(
+            dEmpleado._dni,
+            dEmpleado._nombre,
+            dEmpleado._fechaContratacion,
+            dEmpleado._sueldoMes,
+            dEmpleado._empresaContratista
+          )
+          let salarioT: number = 0
+          salarioT = tmpEmpleado.calcularSueldoAño()
+
+          let dSalario: tSalario = {
+            _dni: null,
+            _nombre: null,
+            _sueldoTotal: null
+
+          }
           dSalario._dni = tmpEmpleado.dni
           dSalario._nombre = tmpEmpleado.nombre
           dSalario._sueldoTotal = salarioT
