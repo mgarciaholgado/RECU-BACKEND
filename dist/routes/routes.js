@@ -11,6 +11,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.routes = void 0;
 const express_1 = require("express");
+const mecanico_1 = require("../classes/empleados/mecanico");
 const database_1 = require("../database/database");
 const clientes_1 = require("../model/clientes");
 const empleados_1 = require("../model/empleados");
@@ -54,8 +55,8 @@ class IndexRoutes {
             });
             yield database_1.db.desconectarBD();
         });
-        this.agregarMecanico = (req, res) => __awaiter(this, void 0, void 0, function* () {
-            const { dni, nombre, tipoEmpleado, fechaContratacion, sueldoMes, horasExtra } = req.body;
+        this.agregarEmpleado = (req, res) => __awaiter(this, void 0, void 0, function* () {
+            const { dni, nombre, tipoEmpleado, fechaContratacion, sueldoMes, empresaContratista, horasExtra } = req.body;
             yield database_1.db.conectarBD();
             const dSchema = {
                 _dni: dni,
@@ -63,25 +64,8 @@ class IndexRoutes {
                 _tipoEmpleado: tipoEmpleado,
                 _fechaContratacion: fechaContratacion,
                 _sueldoMes: sueldoMes,
+                _empresaContratista: empresaContratista,
                 _horasExtra: horasExtra
-            };
-            const oSchema = new empleados_1.Empleados(dSchema);
-            yield oSchema
-                .save()
-                .then((doc) => res.send(doc))
-                .catch((err) => res.send("Error: " + err));
-            yield database_1.db.desconectarBD();
-        });
-        this.agregarPintor = (req, res) => __awaiter(this, void 0, void 0, function* () {
-            const { dni, nombre, tipoEmpleado, fechaContratacion, sueldoMes, empresaContratista } = req.body;
-            yield database_1.db.conectarBD();
-            const dSchema = {
-                _dni: dni,
-                _nombre: nombre,
-                _tipoEmpleado: tipoEmpleado,
-                _fechaContratacion: fechaContratacion,
-                _sueldoMes: sueldoMes,
-                _empresaContratista: empresaContratista
             };
             const oSchema = new empleados_1.Empleados(dSchema);
             yield oSchema
@@ -257,20 +241,30 @@ class IndexRoutes {
                 .catch((err) => res.send("Error: " + err));
             yield database_1.db.desconectarBD();
         });
-        this.registroUser = (req, res) => __awaiter(this, void 0, void 0, function* () {
-            const { codigo, nombre, coste } = req.body;
+        this.calcularSueldoAño = (req, res) => __awaiter(this, void 0, void 0, function* () {
             yield database_1.db.conectarBD();
-            const dSchema = {
-            /*_dni: string;
-                  _nombre: string;
-                  _password: number;
-                  _tipoEmpleado: string;*/
-            };
-            const oSchema = new reparacion_1.Reparaciones(dSchema);
-            yield oSchema
-                .save()
-                .then((doc) => res.send(doc))
-                .catch((err) => res.send("Error: " + err));
+            const dni = req.params.dni;
+            let tmpEmpleado;
+            let dEmpleado;
+            let arraySueldo = [];
+            const query = yield empleados_1.Empleados.aggregate([{ $match: { _tipoEmpleado: "mecanico" } }]);
+            for (dEmpleado of query) {
+                if (dEmpleado._tipoEmpleado == 'mecanico') {
+                    tmpEmpleado = new mecanico_1.Mecanico(dEmpleado._dni, dEmpleado._nombre, dEmpleado._fechaContratacion, dEmpleado._sueldoMes, dEmpleado._horasExtra);
+                    let salarioT = 0;
+                    salarioT = tmpEmpleado.calcularSueldoAño();
+                    let dSalario = {
+                        _dni: null,
+                        _nombre: null,
+                        _sueldoTotal: null
+                    };
+                    dSalario._dni = tmpEmpleado.dni;
+                    dSalario._nombre = tmpEmpleado.nombre;
+                    dSalario._sueldoTotal = salarioT;
+                    arraySueldo.push(dSalario);
+                }
+            }
+            res.json(arraySueldo);
             yield database_1.db.desconectarBD();
         });
         this._router = (0, express_1.Router)();
@@ -280,12 +274,10 @@ class IndexRoutes {
     }
     routes() {
         // POST
-        this._router.post("/register", this.registroUser);
         this._router.post("/addReparacion", this.agregarReparacion);
         this._router.post("/addVehiculo", this.agregarVehiculo);
         this._router.post("/addCliente", this.agregarCliente);
-        this._router.post("/addMecanico", this.agregarMecanico);
-        this._router.post("/addPintor", this.agregarPintor);
+        this._router.post("/addEmpleado", this.agregarEmpleado);
         // GET
         this._router.get("/verEmpleados", this.getEmpleados);
         this._router.get("/verMecanicos", this.getMecanicos);
@@ -296,6 +288,7 @@ class IndexRoutes {
         this._router.get("/verClientes", this.listarClientes);
         this._router.get("/verVehiculo/:matricula", this.listarVehiculo);
         this._router.get("/verCliente/:dni", this.listarCliente);
+        this._router.get("/sueldo", this.calcularSueldoAño);
         // UPDATE
         this._router.put("/updateReparacion/:codigo", this.modificarReparacion);
         this._router.put("/updateVehiculo/:matricula", this.modificarVehiculo);

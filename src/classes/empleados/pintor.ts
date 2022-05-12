@@ -4,8 +4,8 @@ export class Pintor extends Empleado {
     public _empresaContratista: number;
     
   
-    constructor(dni: string, nombre: string, tipoEmpleado:string, fechaContratacion: Date,sueldoMes:number ,empresaContratista:number) {
-        super(dni,nombre,tipoEmpleado,fechaContratacion, sueldoMes);
+    constructor(dni: string, nombre: string, fechaContratacion: Date,sueldoMes:number ,empresaContratista:number) {
+        super(dni,nombre,fechaContratacion, sueldoMes);
         this._empresaContratista = empresaContratista;
     }
   
@@ -15,11 +15,6 @@ export class Pintor extends Empleado {
         return this._empresaContratista
     }
   
-    /*calcularSueldoMesPintor():number{
-      let precioHora = this._precioHora;
-      let salarioMes = precioHora * 28;
-  
-      return Math.round(salarioMes)
-    }*/
+    
     
   }

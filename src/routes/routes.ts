@@ -1,9 +1,10 @@
 import { Request, Response, Router } from "express";
 import { Empleado } from "../classes/empleados/empleado";
+import { Mecanico } from "../classes/empleados/mecanico";
 import { Pintor } from "../classes/empleados/pintor";
 import { db } from "../database/database";
 import { Clientes } from "../model/clientes";
-import { Empleados } from "../model/empleados";
+import { Empleados, tEmpleado2, tMecanico, tMecanico2, tSalario } from "../model/empleados";
 import { Reparaciones } from "../model/reparacion";
 import { Vehiculos } from "../model/vehiculos";
 
@@ -60,27 +61,9 @@ class IndexRoutes {
     await db.desconectarBD();
   };
 
-  private agregarMecanico = async (req: Request, res: Response) => {
-    const { dni, nombre, tipoEmpleado, fechaContratacion, sueldoMes, horasExtra } = req.body;
-    await db.conectarBD();
-    const dSchema = {
-    _dni: dni,
-    _nombre: nombre,
-    _tipoEmpleado: tipoEmpleado,
-    _fechaContratacion: fechaContratacion,
-    _sueldoMes: sueldoMes,
-    _horasExtra: horasExtra
-    };
-    const oSchema = new Empleados(dSchema);
-    await oSchema
-      .save()
-      .then((doc: any) => res.send(doc))
-      .catch((err: any) => res.send("Error: " + err));
-    await db.desconectarBD();
-  };
 
-  private agregarPintor = async (req: Request, res: Response) => {
-    const { dni, nombre, tipoEmpleado, fechaContratacion, sueldoMes, empresaContratista } = req.body;
+  private agregarEmpleado = async (req: Request, res: Response) => {
+    const { dni, nombre, tipoEmpleado, fechaContratacion, sueldoMes, empresaContratista, horasExtra } = req.body;
     await db.conectarBD();
     const dSchema = {
     _dni: dni,
@@ -88,7 +71,8 @@ class IndexRoutes {
     _tipoEmpleado: tipoEmpleado,
     _fechaContratacion: fechaContratacion,
     _sueldoMes: sueldoMes,
-    _empresaContratista: empresaContratista
+    _empresaContratista: empresaContratista,
+    _horasExtra: horasExtra
     };
     const oSchema = new Empleados(dSchema);
     await oSchema
@@ -303,31 +287,54 @@ class IndexRoutes {
     await db.desconectarBD();
   };
 
-  private registroUser = async (req: Request, res: Response) => {
-    const { codigo, nombre, coste } = req.body;
+  private calcularSueldoAño = async (req: Request, res: Response) => {
     await db.conectarBD();
-    const dSchema = {
-      /*_dni: string;
-            _nombre: string;
-            _password: number;
-            _tipoEmpleado: string;*/
-    };
-    const oSchema = new Reparaciones(dSchema);
-    await oSchema
-      .save()
-      .then((doc: any) => res.send(doc))
-      .catch((err: any) => res.send("Error: " + err));
-    await db.desconectarBD();
-  };
+    const dni = req.params.dni;
+    let tmpEmpleado: Empleado
+    let dEmpleado: tEmpleado2
+    let arraySueldo: Array<tSalario> = []
+
+    const query = await Empleados.aggregate(
+      [ { $match : { _tipoEmpleado : "mecanico" } } ]
+  );
+      for(dEmpleado of query){
+        if (dEmpleado._tipoEmpleado == 'mecanico') {
+          tmpEmpleado = new Mecanico(
+            dEmpleado._dni,
+            dEmpleado._nombre,
+            dEmpleado._fechaContratacion,
+            dEmpleado._sueldoMes,
+            dEmpleado._horasExtra
+          )
+          let salarioT: number = 0
+          salarioT = tmpEmpleado.calcularSueldoAño()
+
+          let dSalario: tSalario = {
+            _dni: null,
+            _nombre: null,
+            _sueldoTotal: null
+
+          }
+
+          dSalario._dni = tmpEmpleado.dni
+          dSalario._nombre = tmpEmpleado.nombre
+          dSalario._sueldoTotal = salarioT
+
+          arraySueldo.push(dSalario)
+        }
+
+      }
+      res.json(arraySueldo)
+      await db.desconectarBD();
+    }
+  
 
   routes() {
     // POST
-    this._router.post("/register", this.registroUser);
     this._router.post("/addReparacion", this.agregarReparacion);
     this._router.post("/addVehiculo", this.agregarVehiculo);
     this._router.post("/addCliente", this.agregarCliente);
-    this._router.post("/addMecanico", this.agregarMecanico);
-    this._router.post("/addPintor", this.agregarPintor);
+    this._router.post("/addEmpleado", this.agregarEmpleado);
 
     // GET
     this._router.get("/verEmpleados", this.getEmpleados);
@@ -339,6 +346,7 @@ class IndexRoutes {
     this._router.get("/verClientes", this.listarClientes);
     this._router.get("/verVehiculo/:matricula", this.listarVehiculo);
     this._router.get("/verCliente/:dni", this.listarCliente);
+    this._router.get("/sueldo", this.calcularSueldoAño);
     // UPDATE
     this._router.put("/updateReparacion/:codigo", this.modificarReparacion);
     this._router.put("/updateVehiculo/:matricula", this.modificarVehiculo);

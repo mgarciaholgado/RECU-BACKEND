@@ -1,16 +1,14 @@
 export abstract class Empleado {
     private _dni: string; 
     private _nombre: string;
-    private _tipoEmpleado: string;
     private _fechaContratacion: Date;
     private _sueldoMes: number;
 
 
 
-    constructor(dni: string, nombre: string, tipoEmpleado:string, fechaContratacion: Date, sueldoMes:number) {
+    constructor(dni: string, nombre: string, fechaContratacion: Date, sueldoMes:number) {
         this._dni = dni;
         this._nombre = nombre;
-        this._tipoEmpleado = tipoEmpleado;
         this._fechaContratacion = fechaContratacion;
         this._sueldoMes = sueldoMes
     }
@@ -23,9 +21,6 @@ export abstract class Empleado {
     get nombre() {
         return this._nombre
     }
-    get tipoEmpleado() {
-        return this._tipoEmpleado
-    }
     get fechaContratacion(){
         return this._fechaContratacion
     }
@@ -33,4 +28,10 @@ export abstract class Empleado {
     get sueldoMes(){
         return this._sueldoMes
     }
+
+    calcularSueldoAño():number{
+        let sueldo = this._sueldoMes;
+        let sueldoAño = sueldo * 12
+        return sueldoAño
+      }
 }
