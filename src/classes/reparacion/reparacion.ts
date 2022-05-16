@@ -1,4 +1,4 @@
-export  class Vehiculo {
+export class Reparacion {
     private _codReparacion: number; 
     private _matricula: string;
     private _nombreReparacion: string;

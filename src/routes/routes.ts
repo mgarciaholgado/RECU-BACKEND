@@ -346,6 +346,25 @@ class IndexRoutes {
       res.json(arraySueldo)
       await db.desconectarBD();
     }
+
+    private pruebalook = async (req: Request, res: Response) => {
+      await db.conectarBD();
+      await Clientes.aggregate([
+       {
+         $lookup:{
+          from: "vehiculos",
+          localField: "_dni",
+          foreignField: "_DNIpropietario",
+          as: "vehiculos"
+         }
+       }
+
+      ])
+        .then((doc: any) => res.send(doc))
+        .catch((err: any) => res.send("Error: " + err));
+  
+      await db.desconectarBD();
+    };
   
 
   routes() {
@@ -366,6 +385,7 @@ class IndexRoutes {
     this._router.get("/verVehiculo/:matricula", this.listarVehiculo);
     this._router.get("/verCliente/:dni", this.listarCliente);
     this._router.get("/sueldo", this.calcularSueldoAño);
+    this._router.get("/look", this.pruebalook);
     // UPDATE
     this._router.put("/updateReparacion/:codigo", this.modificarReparacion);
     this._router.put("/updateVehiculo/:matricula", this.modificarVehiculo);

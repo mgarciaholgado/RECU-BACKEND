@@ -1,4 +1,4 @@
-export abstract class Empleado {
+export class Empleado {
     private _dni: string; 
     private _nombre: string;
     private _fechaContratacion: Date;

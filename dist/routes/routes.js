@@ -281,6 +281,22 @@ class IndexRoutes {
             res.json(arraySueldo);
             yield database_1.db.desconectarBD();
         });
+        this.pruebalook = (req, res) => __awaiter(this, void 0, void 0, function* () {
+            yield database_1.db.conectarBD();
+            yield clientes_1.Clientes.aggregate([
+                {
+                    $lookup: {
+                        from: "vehiculos",
+                        localField: "_dni",
+                        foreignField: "_DNIpropietario",
+                        as: "vehiculos"
+                    }
+                }
+            ])
+                .then((doc) => res.send(doc))
+                .catch((err) => res.send("Error: " + err));
+            yield database_1.db.desconectarBD();
+        });
         this._router = (0, express_1.Router)();
     }
     get router() {
@@ -303,6 +319,7 @@ class IndexRoutes {
         this._router.get("/verVehiculo/:matricula", this.listarVehiculo);
         this._router.get("/verCliente/:dni", this.listarCliente);
         this._router.get("/sueldo", this.calcularSueldoAño);
+        this._router.get("/look", this.pruebalook);
         // UPDATE
         this._router.put("/updateReparacion/:codigo", this.modificarReparacion);
         this._router.put("/updateVehiculo/:matricula", this.modificarVehiculo);

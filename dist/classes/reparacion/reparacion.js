@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Vehiculo = void 0;
-class Vehiculo {
+exports.Reparacion = void 0;
+class Reparacion {
     constructor(codReparacion, matricula, nombreReparacion, costeBase) {
         this._codReparacion = codReparacion;
         this._matricula = matricula;
@@ -22,4 +22,4 @@ class Vehiculo {
         return this._CosteBase;
     }
 }
-exports.Vehiculo = Vehiculo;
+exports.Reparacion = Reparacion;
