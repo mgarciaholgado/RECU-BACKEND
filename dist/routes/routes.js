@@ -36,7 +36,9 @@ class IndexRoutes {
             yield database_1.db
                 .conectarBD()
                 .then((mensaje) => __awaiter(this, void 0, void 0, function* () {
-                const query = yield empleados_1.Empleados.aggregate([{ $match: { _tipoEmpleado: "mecanico" } }]);
+                const query = yield empleados_1.Empleados.aggregate([
+                    { $match: { _tipoEmpleado: "mecanico" } },
+                ]);
                 res.json(query);
             }))
                 .catch((mensaje) => {
@@ -48,7 +50,9 @@ class IndexRoutes {
             yield database_1.db
                 .conectarBD()
                 .then((mensaje) => __awaiter(this, void 0, void 0, function* () {
-                const query = yield empleados_1.Empleados.aggregate([{ $match: { _tipoEmpleado: "pintor" } }]);
+                const query = yield empleados_1.Empleados.aggregate([
+                    { $match: { _tipoEmpleado: "pintor" } },
+                ]);
                 res.json(query);
             }))
                 .catch((mensaje) => {
@@ -57,7 +61,7 @@ class IndexRoutes {
             yield database_1.db.desconectarBD();
         });
         this.agregarEmpleado = (req, res) => __awaiter(this, void 0, void 0, function* () {
-            const { dni, nombre, tipoEmpleado, fechaContratacion, sueldoMes, empresaContratista, horasExtra } = req.body;
+            const { dni, nombre, tipoEmpleado, fechaContratacion, sueldoMes, empresaContratista, horasExtra, } = req.body;
             yield database_1.db.conectarBD();
             const dSchema = {
                 _dni: dni,
@@ -66,7 +70,7 @@ class IndexRoutes {
                 _fechaContratacion: fechaContratacion,
                 _sueldoMes: sueldoMes,
                 _empresaContratista: empresaContratista,
-                _horasExtra: horasExtra
+                _horasExtra: horasExtra,
             };
             const oSchema = new empleados_1.Empleados(dSchema);
             yield oSchema
@@ -127,7 +131,12 @@ class IndexRoutes {
             yield database_1.db.conectarBD();
             const code = req.params.codigo;
             const { codigo, matricula, nombre, coste } = req.body;
-            yield reparacion_1.Reparaciones.findOneAndUpdate({ _codReparacion: code }, { _codReparacion: codigo, _matricula: matricula, _nombreReparacion: nombre, _CosteBase: coste }, { new: true })
+            yield reparacion_1.Reparaciones.findOneAndUpdate({ _codReparacion: code }, {
+                _codReparacion: codigo,
+                _matricula: matricula,
+                _nombreReparacion: nombre,
+                _CosteBase: coste,
+            }, { new: true })
                 .then((doc) => res.send(doc))
                 .catch((err) => res.send("Error: " + err));
             yield database_1.db.desconectarBD();
@@ -136,7 +145,13 @@ class IndexRoutes {
             yield database_1.db.conectarBD();
             const mat = req.params.matricula;
             const { DNIpropietario, matricula, marca, color, tipoVehiculo } = req.body;
-            yield vehiculos_1.Vehiculos.findOneAndUpdate({ _matricula: mat }, { _DNIpropietario: DNIpropietario, _matricula: matricula, _marca: marca, _color: color, _tipoVehiculo: tipoVehiculo }, { new: true })
+            yield vehiculos_1.Vehiculos.findOneAndUpdate({ _matricula: mat }, {
+                _DNIpropietario: DNIpropietario,
+                _matricula: matricula,
+                _marca: marca,
+                _color: color,
+                _tipoVehiculo: tipoVehiculo,
+            }, { new: true })
                 .then((doc) => res.send(doc))
                 .catch((err) => res.send("Error: " + err));
             yield database_1.db.desconectarBD();
@@ -249,28 +264,28 @@ class IndexRoutes {
             let arraySueldo = [];
             const query = yield empleados_1.Empleados.find({});
             for (dEmpleado of query) {
-                if (dEmpleado._tipoEmpleado == 'mecanico') {
+                if (dEmpleado._tipoEmpleado == "mecanico") {
                     tmpEmpleado = new mecanico_1.Mecanico(dEmpleado._dni, dEmpleado._nombre, dEmpleado._fechaContratacion, dEmpleado._sueldoMes, dEmpleado._horasExtra);
                     let salarioT = 0;
                     salarioT = tmpEmpleado.calcularSueldoAño();
                     let dSalario = {
                         _dni: null,
                         _nombre: null,
-                        _sueldoTotal: null
+                        _sueldoTotal: null,
                     };
                     dSalario._dni = tmpEmpleado.dni;
                     dSalario._nombre = tmpEmpleado.nombre;
                     dSalario._sueldoTotal = salarioT;
                     arraySueldo.push(dSalario);
                 }
-                else if (dEmpleado._tipoEmpleado == 'pintor') {
+                else if (dEmpleado._tipoEmpleado == "pintor") {
                     tmpEmpleado = new pintor_1.Pintor(dEmpleado._dni, dEmpleado._nombre, dEmpleado._fechaContratacion, dEmpleado._sueldoMes, dEmpleado._empresaContratista);
                     let salarioT = 0;
                     salarioT = tmpEmpleado.calcularSueldoAño();
                     let dSalario = {
                         _dni: null,
                         _nombre: null,
-                        _sueldoTotal: null
+                        _sueldoTotal: null,
                     };
                     dSalario._dni = tmpEmpleado.dni;
                     dSalario._nombre = tmpEmpleado.nombre;
@@ -283,18 +298,25 @@ class IndexRoutes {
         });
         this.pruebalook = (req, res) => __awaiter(this, void 0, void 0, function* () {
             yield database_1.db.conectarBD();
-            yield clientes_1.Clientes.aggregate([
+            const dni = req.params.dni;
+            const query = yield vehiculos_1.Vehiculos.aggregate([
                 {
                     $lookup: {
-                        from: "vehiculos",
-                        localField: "_dni",
-                        foreignField: "_DNIpropietario",
-                        as: "vehiculos"
+                        from: "clientes",
+                        localField: "_DNIpropietario",
+                        foreignField: "_dni",
+                        as: "cliente",
+                    },
+                },
+                { $match: { _DNIpropietario: dni } }, {
+                    $project: {
+                        _id: 0,
+                        _DNIpropietario: 0,
+                        cliente: 0
                     }
                 }
-            ])
-                .then((doc) => res.send(doc))
-                .catch((err) => res.send("Error: " + err));
+            ]);
+            res.json(query);
             yield database_1.db.desconectarBD();
         });
         this._router = (0, express_1.Router)();
@@ -319,7 +341,7 @@ class IndexRoutes {
         this._router.get("/verVehiculo/:matricula", this.listarVehiculo);
         this._router.get("/verCliente/:dni", this.listarCliente);
         this._router.get("/sueldo", this.calcularSueldoAño);
-        this._router.get("/look", this.pruebalook);
+        this._router.get("/look/:dni", this.pruebalook);
         // UPDATE
         this._router.put("/updateReparacion/:codigo", this.modificarReparacion);
         this._router.put("/updateVehiculo/:matricula", this.modificarVehiculo);

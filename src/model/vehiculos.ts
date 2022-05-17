@@ -37,3 +37,19 @@ export type tCoche = {
     _tipoEmpleado: string;
     _empresaContratista: string;
   };
+
+  export type tVehiculo = {
+    
+    _matricula: string;
+    _marca: string;
+    _color: string;
+    _tipoVehiculo: string;
+  };
+
+  export type tVehiculo2 = {
+    
+    _matricula: string | null;
+    _marca: string | null;
+    _color: string | null;
+    _tipoVehiculo: string | null;
+  };
