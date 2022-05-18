@@ -10,8 +10,14 @@ const vehiculoSchema = new Schema({
   _marca: {
     type: String,
   },
+  _modelo: {
+    type: String,
+  },
   _color: {
     type: String,
+  },
+  _precio: {
+    type: Number,
   },
   _tipoVehiculo: {
     type: String,
@@ -21,35 +27,13 @@ const vehiculoSchema = new Schema({
 });
 export const Vehiculos = model("vehiculos", vehiculoSchema);
 
-export type tMoto = {
-  _matricula: string;
-  _nombre: string;
-  _sueldo: number;
-  _tipoEmpleado: string;
-  _tipoMec: string;
-  _horasExtra: number;
-};
-
-export type tCoche = {
-    _id: string;
-    _nombre: string;
-    _sueldo: number;
-    _tipoEmpleado: string;
-    _empresaContratista: string;
-  };
-
   export type tVehiculo = {
     
     _matricula: string;
     _marca: string;
+    _modelo: string;
     _color: string;
+    _precio: number;
     _tipoVehiculo: string;
   };
 
-  export type tVehiculo2 = {
-    
-    _matricula: string | null;
-    _marca: string | null;
-    _color: string | null;
-    _tipoVehiculo: string | null;
-  };

@@ -2,16 +2,20 @@ export  class Vehiculo {
     private _DNIpropietario: string;
     private _matricula: string; 
     private _marca: string;
+    private _modelo: string;
     private _color: string;
+    private _precio: number;
     private _tipoVehiculo: string;
 
 
-    constructor(DNIpropietario: string, matricula: string, marca: string, color: string, tipoVehiculo:string) {
+    constructor(DNIpropietario: string, matricula: string, marca: string, modelo: string, color: string, precio: number,tipoVehiculo:string) {
         this._DNIpropietario = DNIpropietario
         this._matricula = matricula;
         this._marca = marca;
+        this._modelo = modelo
         this._color = color;
-        this._tipoVehiculo = tipoVehiculo
+        this._precio = precio;
+        this._tipoVehiculo = tipoVehiculo;
     }
 
     //     GETTERS AND SETTERS      //
@@ -26,8 +30,17 @@ export  class Vehiculo {
     get marca() {
         return this._marca
     }
+
+    get modelo() {
+        return this._modelo
+    }
+
     get color() {
         return this._color
+    }
+
+    get precio(){
+        return this._precio
     }
     
     get tipoVehiculo(){

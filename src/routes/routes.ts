@@ -117,13 +117,15 @@ class IndexRoutes {
   };
 
   private agregarVehiculo = async (req: Request, res: Response) => {
-    const { DNIpropietario, matricula, marca, color, tipoVehiculo } = req.body;
+    const { DNIpropietario, matricula, modelo , marca, color, precio, tipoVehiculo } = req.body;
     await db.conectarBD();
     const dSchema = {
       _DNIpropietario: DNIpropietario,
       _matricula: matricula,
       _marca: marca,
+      _modelo: modelo,
       _color: color,
+      _precio: precio,
       _tipoVehiculo: tipoVehiculo,
     };
     const oSchema = new Vehiculos(dSchema);
@@ -173,14 +175,16 @@ class IndexRoutes {
   private modificarVehiculo = async (req: Request, res: Response) => {
     await db.conectarBD();
     const mat = req.params.matricula;
-    const { DNIpropietario, matricula, marca, color, tipoVehiculo } = req.body;
+    const { DNIpropietario, matricula, modelo, marca, color, precio , tipoVehiculo } = req.body;
     await Vehiculos.findOneAndUpdate(
       { _matricula: mat },
       {
         _DNIpropietario: DNIpropietario,
         _matricula: matricula,
         _marca: marca,
+        _modelo: modelo,
         _color: color,
+        _precio: precio,
         _tipoVehiculo: tipoVehiculo,
       },
       { new: true }

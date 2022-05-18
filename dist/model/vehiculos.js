@@ -12,8 +12,14 @@ const vehiculoSchema = new mongoose_1.Schema({
     _marca: {
         type: String,
     },
+    _modelo: {
+        type: String,
+    },
     _color: {
         type: String,
+    },
+    _precio: {
+        type: Number,
     },
     _tipoVehiculo: {
         type: String,
