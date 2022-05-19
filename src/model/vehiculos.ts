@@ -22,6 +22,12 @@ const vehiculoSchema = new Schema({
   _tipoVehiculo: {
     type: String,
   },
+  _potencia: {
+    type: Number,
+  },
+  _traccion: {
+    type: String,
+  },
   
   
 });
@@ -35,5 +41,7 @@ export const Vehiculos = model("vehiculos", vehiculoSchema);
     _color: string;
     _precio: number;
     _tipoVehiculo: string;
+    _potencia:number,
+    _traccion: string;
   };
 

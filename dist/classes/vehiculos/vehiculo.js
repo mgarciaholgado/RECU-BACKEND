@@ -33,5 +33,18 @@ class Vehiculo {
     get tipoVehiculo() {
         return this._tipoVehiculo;
     }
+    valorCoches() {
+        let precioB = this._precio;
+        if (this._color == "Azul") {
+            precioB + 50;
+        }
+        else if (this._color == "Verde") {
+            precioB + 100;
+        }
+        else if (this._color == "Rojo") {
+            precioB + 200;
+        }
+        return precioB;
+    }
 }
 exports.Vehiculo = Vehiculo;

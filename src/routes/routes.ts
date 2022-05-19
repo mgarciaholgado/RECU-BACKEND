@@ -117,7 +117,7 @@ class IndexRoutes {
   };
 
   private agregarVehiculo = async (req: Request, res: Response) => {
-    const { DNIpropietario, matricula, modelo , marca, color, precio, tipoVehiculo } = req.body;
+    const { DNIpropietario, matricula, modelo , marca, color, precio, tipoVehiculo, traccion, potencia } = req.body;
     await db.conectarBD();
     const dSchema = {
       _DNIpropietario: DNIpropietario,
@@ -127,6 +127,9 @@ class IndexRoutes {
       _color: color,
       _precio: precio,
       _tipoVehiculo: tipoVehiculo,
+      _potencia: potencia,
+      _traccion: traccion
+
     };
     const oSchema = new Vehiculos(dSchema);
     await oSchema
@@ -376,7 +379,64 @@ class IndexRoutes {
     await db.desconectarBD();
   };
 
-  private pruebalook = async (req: Request, res: Response) => {
+  private calcularValorVehiculos = async (req: Request, res: Response) => {
+    await db.conectarBD();
+    let tmpEmpleado: Empleado;
+    let dEmpleado: tEmpleado;
+    let arraySueldo: Array<tSalario> = [];
+
+    const query = await Empleados.find({});
+    for (dEmpleado of query) {
+      if (dEmpleado._tipoEmpleado == "mecanico") {
+        tmpEmpleado = new Mecanico(
+          dEmpleado._dni,
+          dEmpleado._nombre,
+          dEmpleado._fechaContratacion,
+          dEmpleado._sueldoMes,
+          dEmpleado._horasExtra
+        );
+        let salarioT: number = 0;
+        salarioT = tmpEmpleado.calcularSueldoAño();
+
+        let dSalario: tSalario = {
+          _dni: null,
+          _nombre: null,
+          _sueldoTotal: null,
+        };
+
+        dSalario._dni = tmpEmpleado.dni;
+        dSalario._nombre = tmpEmpleado.nombre;
+        dSalario._sueldoTotal = salarioT;
+        arraySueldo.push(dSalario);
+      } else if (dEmpleado._tipoEmpleado == "pintor") {
+        tmpEmpleado = new Pintor(
+          dEmpleado._dni,
+          dEmpleado._nombre,
+          dEmpleado._fechaContratacion,
+          dEmpleado._sueldoMes,
+          dEmpleado._empresaContratista
+        );
+        let salarioT: number = 0;
+        salarioT = tmpEmpleado.calcularSueldoAño();
+
+        let dSalario: tSalario = {
+          _dni: null,
+          _nombre: null,
+          _sueldoTotal: null,
+        };
+        dSalario._dni = tmpEmpleado.dni;
+        dSalario._nombre = tmpEmpleado.nombre;
+        dSalario._sueldoTotal = salarioT;
+
+        arraySueldo.push(dSalario);
+      }
+    }
+    res.json(arraySueldo);
+
+    await db.desconectarBD();
+  };
+
+  private look = async (req: Request, res: Response) => {
     await db.conectarBD();
     const dni = req.params.dni;
     const query = await Vehiculos.aggregate([
@@ -402,6 +462,26 @@ class IndexRoutes {
     await db.desconectarBD();
   };
 
+  private look2 = async (req: Request, res: Response) => {
+    await db.conectarBD();
+    const matricula = req.params.matricula;
+    const query = await Reparaciones.aggregate([
+      {
+        $lookup: {
+          from: "vehiculos",
+          localField: "_matricula",
+          foreignField: "_matriculas",
+          as: "vehiculo",
+        },
+      },
+      { $match: { _matricula: matricula } }
+      
+    ]);
+    
+    res.json(query);
+    await db.desconectarBD();
+  };
+
   routes() {
     // POST
     this._router.post("/addReparacion", this.agregarReparacion);
@@ -420,7 +500,9 @@ class IndexRoutes {
     this._router.get("/verVehiculo/:matricula", this.listarVehiculo);
     this._router.get("/verCliente/:dni", this.listarCliente);
     this._router.get("/sueldo", this.calcularSueldoAño);
-    this._router.get("/look/:dni", this.pruebalook);
+    this._router.get("/valor", this.calcularValorVehiculos);
+    this._router.get("/look/:dni", this.look);
+    this._router.get("/look2/:matricula", this.look2);
     // UPDATE
     this._router.put("/updateReparacion/:codigo", this.modificarReparacion);
     this._router.put("/updateVehiculo/:matricula", this.modificarVehiculo);
@@ -430,6 +512,7 @@ class IndexRoutes {
     this._router.delete("/deleteVehiculo/:matricula", this.borrarVehiculo);
     this._router.delete("/deleteCliente/:dni", this.borrarCliente);
     this._router.delete("/deleteEmpleado/:dni", this.borrarEmpleado);
+
     this._router.get("/");
   }
 }

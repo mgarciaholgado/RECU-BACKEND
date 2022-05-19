@@ -24,5 +24,11 @@ const vehiculoSchema = new mongoose_1.Schema({
     _tipoVehiculo: {
         type: String,
     },
+    _potencia: {
+        type: Number,
+    },
+    _traccion: {
+        type: String,
+    },
 });
 exports.Vehiculos = (0, mongoose_1.model)("vehiculos", vehiculoSchema);
