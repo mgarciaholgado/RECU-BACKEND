@@ -11,8 +11,12 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.routes = void 0;
 const express_1 = require("express");
+const empleado_1 = require("../classes/empleados/empleado");
 const mecanico_1 = require("../classes/empleados/mecanico");
 const pintor_1 = require("../classes/empleados/pintor");
+const deportivo_1 = require("../classes/vehiculos/deportivo");
+const todTerreno_1 = require("../classes/vehiculos/todTerreno");
+const vehiculo_1 = require("../classes/vehiculos/vehiculo");
 const database_1 = require("../database/database");
 const clientes_1 = require("../model/clientes");
 const empleados_1 = require("../model/empleados");
@@ -265,80 +269,58 @@ class IndexRoutes {
         });
         this.calcularSueldoAño = (req, res) => __awaiter(this, void 0, void 0, function* () {
             yield database_1.db.conectarBD();
-            let tmpEmpleado;
+            let tmpEmpleado = new empleado_1.Empleado("", "", new Date(), 0);
             let dEmpleado;
             let arraySueldo = [];
             const query = yield empleados_1.Empleados.find({});
             for (dEmpleado of query) {
                 if (dEmpleado._tipoEmpleado == "mecanico") {
                     tmpEmpleado = new mecanico_1.Mecanico(dEmpleado._dni, dEmpleado._nombre, dEmpleado._fechaContratacion, dEmpleado._sueldoMes, dEmpleado._horasExtra);
-                    let salarioT = 0;
-                    salarioT = tmpEmpleado.calcularSueldoAño();
-                    let dSalario = {
-                        _dni: null,
-                        _nombre: null,
-                        _sueldoTotal: null,
-                    };
-                    dSalario._dni = tmpEmpleado.dni;
-                    dSalario._nombre = tmpEmpleado.nombre;
-                    dSalario._sueldoTotal = salarioT;
-                    arraySueldo.push(dSalario);
                 }
                 else if (dEmpleado._tipoEmpleado == "pintor") {
                     tmpEmpleado = new pintor_1.Pintor(dEmpleado._dni, dEmpleado._nombre, dEmpleado._fechaContratacion, dEmpleado._sueldoMes, dEmpleado._empresaContratista);
-                    let salarioT = 0;
-                    salarioT = tmpEmpleado.calcularSueldoAño();
-                    let dSalario = {
-                        _dni: null,
-                        _nombre: null,
-                        _sueldoTotal: null,
-                    };
-                    dSalario._dni = tmpEmpleado.dni;
-                    dSalario._nombre = tmpEmpleado.nombre;
-                    dSalario._sueldoTotal = salarioT;
-                    arraySueldo.push(dSalario);
                 }
+                let salarioT = 0;
+                salarioT = tmpEmpleado.calcularSueldoAño();
+                let dSalario = {
+                    _dni: null,
+                    _nombre: null,
+                    _sueldoTotal: null,
+                };
+                dSalario._dni = tmpEmpleado.dni;
+                dSalario._nombre = tmpEmpleado.nombre;
+                dSalario._sueldoTotal = salarioT;
+                arraySueldo.push(dSalario);
             }
             res.json(arraySueldo);
             yield database_1.db.desconectarBD();
         });
         this.calcularValorVehiculos = (req, res) => __awaiter(this, void 0, void 0, function* () {
             yield database_1.db.conectarBD();
-            let tmpEmpleado;
-            let dEmpleado;
-            let arraySueldo = [];
+            let tmpVehiculo = new vehiculo_1.Vehiculo("", "", "", "", "", 0, "");
+            let vehiculo;
+            let arrayVehiculos = [];
             const query = yield empleados_1.Empleados.find({});
-            for (dEmpleado of query) {
-                if (dEmpleado._tipoEmpleado == "mecanico") {
-                    tmpEmpleado = new mecanico_1.Mecanico(dEmpleado._dni, dEmpleado._nombre, dEmpleado._fechaContratacion, dEmpleado._sueldoMes, dEmpleado._horasExtra);
-                    let salarioT = 0;
-                    salarioT = tmpEmpleado.calcularSueldoAño();
-                    let dSalario = {
-                        _dni: null,
-                        _nombre: null,
-                        _sueldoTotal: null,
-                    };
-                    dSalario._dni = tmpEmpleado.dni;
-                    dSalario._nombre = tmpEmpleado.nombre;
-                    dSalario._sueldoTotal = salarioT;
-                    arraySueldo.push(dSalario);
+            for (vehiculo of query) {
+                if (vehiculo._tipoVehiculo == "Deportivo") {
+                    tmpVehiculo = new deportivo_1.Deportivo(vehiculo._DNIpropietario, vehiculo._matricula, vehiculo._marca, vehiculo._modelo, vehiculo._color, vehiculo._precio, vehiculo._tipoVehiculo, vehiculo._potencia);
                 }
-                else if (dEmpleado._tipoEmpleado == "pintor") {
-                    tmpEmpleado = new pintor_1.Pintor(dEmpleado._dni, dEmpleado._nombre, dEmpleado._fechaContratacion, dEmpleado._sueldoMes, dEmpleado._empresaContratista);
-                    let salarioT = 0;
-                    salarioT = tmpEmpleado.calcularSueldoAño();
-                    let dSalario = {
-                        _dni: null,
-                        _nombre: null,
-                        _sueldoTotal: null,
-                    };
-                    dSalario._dni = tmpEmpleado.dni;
-                    dSalario._nombre = tmpEmpleado.nombre;
-                    dSalario._sueldoTotal = salarioT;
-                    arraySueldo.push(dSalario);
+                else if (vehiculo._tipoVehiculo == "Todoterreno") {
+                    tmpVehiculo = new todTerreno_1.todoTerreno(vehiculo._DNIpropietario, vehiculo._matricula, vehiculo._marca, vehiculo._modelo, vehiculo._color, vehiculo._precio, vehiculo._tipoVehiculo, vehiculo._traccion);
                 }
+                let valorT = 0;
+                valorT = tmpVehiculo.valorCoches();
+                let dVehiculo = {
+                    _matricula: null,
+                    _modelo: null,
+                    _valor: null
+                };
+                dVehiculo._matricula = tmpVehiculo.matricula;
+                dVehiculo._modelo = tmpVehiculo.modelo;
+                dVehiculo._valor = valorT;
+                arrayVehiculos.push(dVehiculo);
             }
-            res.json(arraySueldo);
+            res.json(arrayVehiculos);
             yield database_1.db.desconectarBD();
         });
         this.look = (req, res) => __awaiter(this, void 0, void 0, function* () {

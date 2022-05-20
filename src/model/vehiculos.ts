@@ -34,7 +34,7 @@ const vehiculoSchema = new Schema({
 export const Vehiculos = model("vehiculos", vehiculoSchema);
 
   export type tVehiculo = {
-    
+    _DNIpropietario: string;
     _matricula: string;
     _marca: string;
     _modelo: string;
@@ -44,4 +44,10 @@ export const Vehiculos = model("vehiculos", vehiculoSchema);
     _potencia:number,
     _traccion: string;
   };
+
+  export type tValor = {
+    _matricula: string | null;
+    _modelo: string | null;
+    _valor: number | null;
+  }
 

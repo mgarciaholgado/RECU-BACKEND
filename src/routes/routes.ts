@@ -4,6 +4,8 @@ import { Cliente } from "../classes/clientes/clientes";
 import { Empleado } from "../classes/empleados/empleado";
 import { Mecanico } from "../classes/empleados/mecanico";
 import { Pintor } from "../classes/empleados/pintor";
+import { Deportivo } from "../classes/vehiculos/deportivo";
+import { todoTerreno } from "../classes/vehiculos/todTerreno";
 import { Vehiculo } from "../classes/vehiculos/vehiculo";
 import { db } from "../database/database";
 import { Clientes } from "../model/clientes";
@@ -16,7 +18,7 @@ import {
   tSalario,
 } from "../model/empleados";
 import { Reparaciones } from "../model/reparacion";
-import { tVehiculo, Vehiculos } from "../model/vehiculos";
+import { tValor, tVehiculo, Vehiculos } from "../model/vehiculos";
 
 class IndexRoutes {
   private _router: Router;
@@ -117,7 +119,7 @@ class IndexRoutes {
   };
 
   private agregarVehiculo = async (req: Request, res: Response) => {
-    const { DNIpropietario, matricula, modelo , marca, color, precio, tipoVehiculo, traccion, potencia } = req.body;
+    const { DNIpropietario, matricula, modelo, marca, color, precio, tipoVehiculo, traccion, potencia } = req.body;
     await db.conectarBD();
     const dSchema = {
       _DNIpropietario: DNIpropietario,
@@ -178,7 +180,7 @@ class IndexRoutes {
   private modificarVehiculo = async (req: Request, res: Response) => {
     await db.conectarBD();
     const mat = req.params.matricula;
-    const { DNIpropietario, matricula, modelo, marca, color, precio , tipoVehiculo } = req.body;
+    const { DNIpropietario, matricula, modelo, marca, color, precio, tipoVehiculo } = req.body;
     await Vehiculos.findOneAndUpdate(
       { _matricula: mat },
       {
@@ -324,7 +326,7 @@ class IndexRoutes {
 
   private calcularSueldoAño = async (req: Request, res: Response) => {
     await db.conectarBD();
-    let tmpEmpleado: Empleado;
+    let tmpEmpleado: Empleado = new Empleado("", "", new Date(), 0);
     let dEmpleado: tEmpleado;
     let arraySueldo: Array<tSalario> = [];
 
@@ -338,19 +340,7 @@ class IndexRoutes {
           dEmpleado._sueldoMes,
           dEmpleado._horasExtra
         );
-        let salarioT: number = 0;
-        salarioT = tmpEmpleado.calcularSueldoAño();
 
-        let dSalario: tSalario = {
-          _dni: null,
-          _nombre: null,
-          _sueldoTotal: null,
-        };
-
-        dSalario._dni = tmpEmpleado.dni;
-        dSalario._nombre = tmpEmpleado.nombre;
-        dSalario._sueldoTotal = salarioT;
-        arraySueldo.push(dSalario);
       } else if (dEmpleado._tipoEmpleado == "pintor") {
         tmpEmpleado = new Pintor(
           dEmpleado._dni,
@@ -359,20 +349,24 @@ class IndexRoutes {
           dEmpleado._sueldoMes,
           dEmpleado._empresaContratista
         );
-        let salarioT: number = 0;
-        salarioT = tmpEmpleado.calcularSueldoAño();
 
-        let dSalario: tSalario = {
-          _dni: null,
-          _nombre: null,
-          _sueldoTotal: null,
-        };
-        dSalario._dni = tmpEmpleado.dni;
-        dSalario._nombre = tmpEmpleado.nombre;
-        dSalario._sueldoTotal = salarioT;
-
-        arraySueldo.push(dSalario);
       }
+
+
+      let salarioT: number = 0;
+      salarioT = tmpEmpleado.calcularSueldoAño();
+
+      let dSalario: tSalario = {
+        _dni: null,
+        _nombre: null,
+        _sueldoTotal: null,
+      };
+
+      dSalario._dni = tmpEmpleado.dni;
+      dSalario._nombre = tmpEmpleado.nombre;
+      dSalario._sueldoTotal = salarioT;
+
+      arraySueldo.push(dSalario);
     }
     res.json(arraySueldo);
 
@@ -381,57 +375,55 @@ class IndexRoutes {
 
   private calcularValorVehiculos = async (req: Request, res: Response) => {
     await db.conectarBD();
-    let tmpEmpleado: Empleado;
-    let dEmpleado: tEmpleado;
-    let arraySueldo: Array<tSalario> = [];
+    let tmpVehiculo: Vehiculo = new Vehiculo("", "", "", "", "", 0, "");
+    let vehiculo: tVehiculo;
+    let arrayVehiculos: Array<tValor> = [];
 
     const query = await Empleados.find({});
-    for (dEmpleado of query) {
-      if (dEmpleado._tipoEmpleado == "mecanico") {
-        tmpEmpleado = new Mecanico(
-          dEmpleado._dni,
-          dEmpleado._nombre,
-          dEmpleado._fechaContratacion,
-          dEmpleado._sueldoMes,
-          dEmpleado._horasExtra
+
+    for (vehiculo of query) {
+      if (vehiculo._tipoVehiculo == "Deportivo") {
+        tmpVehiculo = new Deportivo(
+          vehiculo._DNIpropietario,
+          vehiculo._matricula,
+          vehiculo._marca,
+          vehiculo._modelo,
+          vehiculo._color,
+          vehiculo._precio,
+          vehiculo._tipoVehiculo,
+          vehiculo._potencia
         );
-        let salarioT: number = 0;
-        salarioT = tmpEmpleado.calcularSueldoAño();
 
-        let dSalario: tSalario = {
-          _dni: null,
-          _nombre: null,
-          _sueldoTotal: null,
-        };
-
-        dSalario._dni = tmpEmpleado.dni;
-        dSalario._nombre = tmpEmpleado.nombre;
-        dSalario._sueldoTotal = salarioT;
-        arraySueldo.push(dSalario);
-      } else if (dEmpleado._tipoEmpleado == "pintor") {
-        tmpEmpleado = new Pintor(
-          dEmpleado._dni,
-          dEmpleado._nombre,
-          dEmpleado._fechaContratacion,
-          dEmpleado._sueldoMes,
-          dEmpleado._empresaContratista
+      } else if (vehiculo._tipoVehiculo == "Todoterreno") {
+        tmpVehiculo = new todoTerreno(
+          vehiculo._DNIpropietario,
+          vehiculo._matricula,
+          vehiculo._marca,
+          vehiculo._modelo,
+          vehiculo._color,
+          vehiculo._precio,
+          vehiculo._tipoVehiculo,
+          vehiculo._traccion
         );
-        let salarioT: number = 0;
-        salarioT = tmpEmpleado.calcularSueldoAño();
 
-        let dSalario: tSalario = {
-          _dni: null,
-          _nombre: null,
-          _sueldoTotal: null,
-        };
-        dSalario._dni = tmpEmpleado.dni;
-        dSalario._nombre = tmpEmpleado.nombre;
-        dSalario._sueldoTotal = salarioT;
-
-        arraySueldo.push(dSalario);
       }
+
+      let valorT: number = 0;
+      valorT = tmpVehiculo.valorCoches();
+
+      let dVehiculo: tValor = {
+        _matricula: null,
+        _modelo: null,
+        _valor: null
+      };
+      dVehiculo._matricula = tmpVehiculo.matricula;
+      dVehiculo._modelo = tmpVehiculo.modelo;
+      dVehiculo._valor = valorT;
+
+      arrayVehiculos.push(dVehiculo);
+
     }
-    res.json(arraySueldo);
+    res.json(arrayVehiculos);
 
     await db.desconectarBD();
   };
@@ -448,16 +440,16 @@ class IndexRoutes {
           as: "cliente",
         },
       },
-      { $match: { _DNIpropietario: dni } },{
-        $project:{
+      { $match: { _DNIpropietario: dni } }, {
+        $project: {
           _id: 0,
-          _DNIpropietario:0,
+          _DNIpropietario: 0,
           cliente: 0
         }
       }
-      
+
     ]);
-    
+
     res.json(query);
     await db.desconectarBD();
   };
@@ -475,9 +467,9 @@ class IndexRoutes {
         },
       },
       { $match: { _matricula: matricula } }
-      
+
     ]);
-    
+
     res.json(query);
     await db.desconectarBD();
   };

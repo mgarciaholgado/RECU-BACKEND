@@ -79,12 +79,6 @@ export type tPintor = {
     
     };  
 
-    export type tSalario2 = {
-      _dni: string | null;
-      _nombre: string | null;
-     _sueldoTotal: Number | null;
-      
-      }; 
 
 export const Empleados = model("empleados", empleadoSchema);
 

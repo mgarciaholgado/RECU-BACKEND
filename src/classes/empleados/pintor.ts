@@ -15,7 +15,7 @@ export class Pintor extends Empleado {
         return this._empresaContratista
     }
   
-    override calcularSueldoAño():any{
+    override calcularSueldoAño():number{
         let sueldoAño: number = super.calcularSueldoAño();
         if (this._empresaContratista == 'CEYDE PINTORES') {
             sueldoAño = sueldoAño + 350
