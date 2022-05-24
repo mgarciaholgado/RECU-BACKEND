@@ -300,7 +300,7 @@ class IndexRoutes {
             let tmpVehiculo = new vehiculo_1.Vehiculo("", "", "", "", "", 0, "");
             let vehiculo;
             let arrayVehiculos = [];
-            const query = yield empleados_1.Empleados.find({});
+            const query = yield vehiculos_1.Vehiculos.find({});
             for (vehiculo of query) {
                 if (vehiculo._tipoVehiculo == "Deportivo") {
                     tmpVehiculo = new deportivo_1.Deportivo(vehiculo._DNIpropietario, vehiculo._matricula, vehiculo._marca, vehiculo._modelo, vehiculo._color, vehiculo._precio, vehiculo._tipoVehiculo, vehiculo._potencia);
@@ -312,10 +312,12 @@ class IndexRoutes {
                 valorT = tmpVehiculo.valorCoches();
                 let dVehiculo = {
                     _matricula: null,
+                    _tipoVehiculo: null,
                     _modelo: null,
                     _valor: null
                 };
                 dVehiculo._matricula = tmpVehiculo.matricula;
+                dVehiculo._tipoVehiculo = tmpVehiculo.tipoVehiculo;
                 dVehiculo._modelo = tmpVehiculo.modelo;
                 dVehiculo._valor = valorT;
                 arrayVehiculos.push(dVehiculo);

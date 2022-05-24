@@ -12,15 +12,15 @@ class Deportivo extends vehiculo_1.Vehiculo {
         return this._potencia;
     }
     valorCoches() {
-        let precioBase = super.valorCoches();
-        let precioT = 0;
-        if (this._potencia <= 200) {
-            precioT = precioBase + 200;
+        let precioColor = super.valorCoches();
+        let precioTotal = 0;
+        if (this._potencia <= 300) {
+            precioTotal = precioColor + 2000;
         }
-        else if (this._potencia >= 400) {
-            precioT = precioBase + 400;
+        else if (this._potencia >= 300) {
+            precioTotal = precioColor + 4000;
         }
-        return Math.round(precioT);
+        return (precioTotal);
     }
 }
 exports.Deportivo = Deportivo;

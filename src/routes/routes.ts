@@ -379,7 +379,7 @@ class IndexRoutes {
     let vehiculo: tVehiculo;
     let arrayVehiculos: Array<tValor> = [];
 
-    const query = await Empleados.find({});
+    const query = await Vehiculos.find({});
 
     for (vehiculo of query) {
       if (vehiculo._tipoVehiculo == "Deportivo") {
@@ -413,10 +413,12 @@ class IndexRoutes {
 
       let dVehiculo: tValor = {
         _matricula: null,
+        _tipoVehiculo: null,
         _modelo: null,
         _valor: null
       };
       dVehiculo._matricula = tmpVehiculo.matricula;
+      dVehiculo._tipoVehiculo = tmpVehiculo.tipoVehiculo;
       dVehiculo._modelo = tmpVehiculo.modelo;
       dVehiculo._valor = valorT;
 

@@ -47,6 +47,7 @@ export const Vehiculos = model("vehiculos", vehiculoSchema);
 
   export type tValor = {
     _matricula: string | null;
+    _tipoVehiculo: string | null;
     _modelo: string | null;
     _valor: number | null;
   }

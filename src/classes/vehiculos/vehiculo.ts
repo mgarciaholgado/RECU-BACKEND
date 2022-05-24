@@ -47,15 +47,27 @@ export  class Vehiculo {
         return this._tipoVehiculo
     }
 
-    valorCoches(){
+    valorCoches():number{
         let precioB = this._precio
-        if(this._color == "Azul"){
-            precioB + 50
-        }else if (this._color == "Verde") {
-            precioB + 100
-        }else if(this._color == "Rojo"){
-            precioB + 200
-        }
-        return precioB
+        let vuelta = 0
+
+        switch (this._color) {
+            case 'Azul':
+              vuelta = precioB + 500
+              break;
+
+            case 'Verde':
+                vuelta = precioB + 800
+              break;
+
+            case 'Rojo':
+                vuelta = precioB + 1000
+              break;
+
+            default:
+              vuelta = precioB
+          }
+
+        return (vuelta)
     }
 }

@@ -15,12 +15,12 @@ class todoTerreno extends vehiculo_1.Vehiculo {
         let precioBase = super.valorCoches();
         let precioT = 0;
         if (this._traccion == "4x4") {
-            precioT + 350;
+            precioT = precioBase + 350;
         }
         else if (this._traccion == "AWD") {
-            precioT + 500;
+            precioT = precioBase + 500;
         }
-        return Math.round(precioT);
+        return (precioT);
     }
 }
 exports.todoTerreno = todoTerreno;
