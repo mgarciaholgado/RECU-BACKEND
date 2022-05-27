@@ -313,11 +313,13 @@ class IndexRoutes {
                 let dVehiculo = {
                     _matricula: null,
                     _tipoVehiculo: null,
+                    _marca: null,
                     _modelo: null,
                     _valor: null
                 };
                 dVehiculo._matricula = tmpVehiculo.matricula;
                 dVehiculo._tipoVehiculo = tmpVehiculo.tipoVehiculo;
+                dVehiculo._marca = tmpVehiculo.marca;
                 dVehiculo._modelo = tmpVehiculo.modelo;
                 dVehiculo._valor = valorT;
                 arrayVehiculos.push(dVehiculo);
