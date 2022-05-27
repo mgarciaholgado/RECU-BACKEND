@@ -175,6 +175,24 @@ class IndexRoutes {
                 .catch((err) => res.send("Error: " + err));
             yield database_1.db.desconectarBD();
         });
+        this.modificarDeportivo = (req, res) => __awaiter(this, void 0, void 0, function* () {
+            yield database_1.db.conectarBD();
+            const dn = req.params.dni;
+            const { dni, nombre, telefono } = req.body;
+            yield clientes_1.Clientes.findOneAndUpdate({ _dni: dn }, { _dni: dni, _nombre: nombre, _telefono: telefono }, { new: true })
+                .then((doc) => res.send(doc))
+                .catch((err) => res.send("Error: " + err));
+            yield database_1.db.desconectarBD();
+        });
+        this.modificarTodoterreno = (req, res) => __awaiter(this, void 0, void 0, function* () {
+            yield database_1.db.conectarBD();
+            const dn = req.params.dni;
+            const { dni, nombre, telefono } = req.body;
+            yield clientes_1.Clientes.findOneAndUpdate({ _dni: dn }, { _dni: dni, _nombre: nombre, _telefono: telefono }, { new: true })
+                .then((doc) => res.send(doc))
+                .catch((err) => res.send("Error: " + err));
+            yield database_1.db.desconectarBD();
+        });
         this.borrarReparacion = (req, res) => __awaiter(this, void 0, void 0, function* () {
             yield database_1.db.conectarBD();
             const codigo = req.params.code;
@@ -396,6 +414,8 @@ class IndexRoutes {
         this._router.put("/updateReparacion/:codigo", this.modificarReparacion);
         this._router.put("/updateVehiculo/:matricula", this.modificarVehiculo);
         this._router.put("/updateCliente/:dni", this.modificarCliente);
+        this._router.put("/updateDeportivo/:matricula", this.modificarDeportivo);
+        this._router.put("/updateTodoterreno/:matricula", this.modificarTodoterreno);
         // DELETE
         this._router.delete("/deleteReparacion/:code", this.borrarReparacion);
         this._router.delete("/deleteVehiculo/:matricula", this.borrarVehiculo);

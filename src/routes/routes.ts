@@ -215,6 +215,36 @@ class IndexRoutes {
     await db.desconectarBD();
   };
 
+  private modificarDeportivo = async (req: Request, res: Response) => {
+    await db.conectarBD();
+    const dn = req.params.dni;
+    const { dni, nombre, telefono } = req.body;
+    await Clientes.findOneAndUpdate(
+      { _dni: dn },
+      { _dni: dni, _nombre: nombre, _telefono: telefono },
+      { new: true }
+    )
+      .then((doc: any) => res.send(doc))
+      .catch((err: any) => res.send("Error: " + err));
+
+    await db.desconectarBD();
+  };
+
+  private modificarTodoterreno = async (req: Request, res: Response) => {
+    await db.conectarBD();
+    const dn = req.params.dni;
+    const { dni, nombre, telefono } = req.body;
+    await Clientes.findOneAndUpdate(
+      { _dni: dn },
+      { _dni: dni, _nombre: nombre, _telefono: telefono },
+      { new: true }
+    )
+      .then((doc: any) => res.send(doc))
+      .catch((err: any) => res.send("Error: " + err));
+
+    await db.desconectarBD();
+  };
+
   private borrarReparacion = async (req: Request, res: Response) => {
     await db.conectarBD();
     const codigo = req.params.code;
@@ -503,6 +533,8 @@ class IndexRoutes {
     this._router.put("/updateReparacion/:codigo", this.modificarReparacion);
     this._router.put("/updateVehiculo/:matricula", this.modificarVehiculo);
     this._router.put("/updateCliente/:dni", this.modificarCliente);
+    this._router.put("/updateDeportivo/:matricula", this.modificarDeportivo);
+    this._router.put("/updateTodoterreno/:matricula", this.modificarTodoterreno);
     // DELETE
     this._router.delete("/deleteReparacion/:code", this.borrarReparacion);
     this._router.delete("/deleteVehiculo/:matricula", this.borrarVehiculo);
