@@ -289,19 +289,7 @@ class IndexRoutes {
         this.listarEmpleado = (req, res) => __awaiter(this, void 0, void 0, function* () {
             yield database_1.db.conectarBD();
             const dni = req.params.dni;
-            yield empleados_1.Empleados.aggregate([
-                { $match: { _dni: dni } },
-                {
-                    $project: {
-                        _dni: 1,
-                        _nombre: 1,
-                        _tipoEmpleado: 1,
-                        _fechaContratacion: { $dateToString: { format: "%d/%m/%Y", date: "$_fechaContratacion" } },
-                        _sueldoMes: 1,
-                        _horasExtra: 1,
-                    }
-                }
-            ])
+            yield empleados_1.Empleados.findOne({ _dni: dni })
                 .then((doc) => res.send(doc))
                 .catch((err) => res.send("Error: " + err));
             yield database_1.db.desconectarBD();

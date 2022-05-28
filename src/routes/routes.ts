@@ -364,19 +364,7 @@ class IndexRoutes {
   private listarEmpleado = async (req: Request, res: Response) => {
     await db.conectarBD();
     const dni = req.params.dni;
-    await Empleados.aggregate([
-      { $match : { _dni : dni } },
-      {
-        $project: {
-           _dni:1,
-           _nombre:1,
-           _tipoEmpleado:1,
-           _fechaContratacion: { $dateToString: { format: "%d/%m/%Y", date: "$_fechaContratacion" } },
-           _sueldoMes:1,
-           _horasExtra:1,
-        }
-      }
-    ])
+    await Empleados.findOne({ _dni: dni })
       .then((doc: any) => res.send(doc))
       .catch((err: any) => res.send("Error: " + err));
 
