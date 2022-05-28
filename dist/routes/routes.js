@@ -149,23 +149,6 @@ class IndexRoutes {
                 .catch((err) => res.send("Error: " + err));
             yield database_1.db.desconectarBD();
         });
-        this.modificarVehiculo = (req, res) => __awaiter(this, void 0, void 0, function* () {
-            yield database_1.db.conectarBD();
-            const mat = req.params.matricula;
-            const { DNIpropietario, matricula, modelo, marca, color, precio, tipoVehiculo } = req.body;
-            yield vehiculos_1.Vehiculos.findOneAndUpdate({ _matricula: mat }, {
-                _DNIpropietario: DNIpropietario,
-                _matricula: matricula,
-                _marca: marca,
-                _modelo: modelo,
-                _color: color,
-                _precio: precio,
-                _tipoVehiculo: tipoVehiculo,
-            }, { new: true })
-                .then((doc) => res.send(doc))
-                .catch((err) => res.send("Error: " + err));
-            yield database_1.db.desconectarBD();
-        });
         this.modificarCliente = (req, res) => __awaiter(this, void 0, void 0, function* () {
             yield database_1.db.conectarBD();
             const dn = req.params.dni;
@@ -177,18 +160,36 @@ class IndexRoutes {
         });
         this.modificarDeportivo = (req, res) => __awaiter(this, void 0, void 0, function* () {
             yield database_1.db.conectarBD();
-            const dn = req.params.dni;
-            const { dni, nombre, telefono } = req.body;
-            yield clientes_1.Clientes.findOneAndUpdate({ _dni: dn }, { _dni: dni, _nombre: nombre, _telefono: telefono }, { new: true })
+            const mat = req.params.matricula;
+            const { DNIpropietario, matricula, marca, modelo, color, precio, tipoVehiculo, potencia } = req.body;
+            yield vehiculos_1.Vehiculos.findOneAndUpdate({ _matricula: mat }, { _DNIpropietario: DNIpropietario, _matricula: matricula, _marca: marca, _modelo: modelo, _color: color, _precio: precio, _tipoVehiculo: tipoVehiculo, _potencia: potencia }, { new: true })
                 .then((doc) => res.send(doc))
                 .catch((err) => res.send("Error: " + err));
             yield database_1.db.desconectarBD();
         });
         this.modificarTodoterreno = (req, res) => __awaiter(this, void 0, void 0, function* () {
             yield database_1.db.conectarBD();
-            const dn = req.params.dni;
-            const { dni, nombre, telefono } = req.body;
-            yield clientes_1.Clientes.findOneAndUpdate({ _dni: dn }, { _dni: dni, _nombre: nombre, _telefono: telefono }, { new: true })
+            const mat = req.params.matricula;
+            const { DNIpropietario, matricula, marca, modelo, color, precio, tipoVehiculo, traccion } = req.body;
+            yield vehiculos_1.Vehiculos.findOneAndUpdate({ _matricula: mat }, { _DNIpropietario: DNIpropietario, _matricula: matricula, _marca: marca, _modelo: modelo, _color: color, _precio: precio, _tipoVehiculo: tipoVehiculo, _traccion: traccion }, { new: true })
+                .then((doc) => res.send(doc))
+                .catch((err) => res.send("Error: " + err));
+            yield database_1.db.desconectarBD();
+        });
+        this.modificarMecanico = (req, res) => __awaiter(this, void 0, void 0, function* () {
+            yield database_1.db.conectarBD();
+            const mat = req.params.dni;
+            const { dni, nombre, tipoEmpleado, fechaContratacion, sueldoMes, horasExtra } = req.body;
+            yield empleados_1.Empleados.findOneAndUpdate({ _dni: mat }, { _dni: dni, _nombre: nombre, _tipoEmpleado: tipoEmpleado, _fechaContratacion: fechaContratacion, _sueldoMes: sueldoMes, _horasExtra: horasExtra }, { new: true })
+                .then((doc) => res.send(doc))
+                .catch((err) => res.send("Error: " + err));
+            yield database_1.db.desconectarBD();
+        });
+        this.modificarPintor = (req, res) => __awaiter(this, void 0, void 0, function* () {
+            yield database_1.db.conectarBD();
+            const mat = req.params.matricula;
+            const { DNIpropietario, matricula, marca, modelo, color, precio, tipoVehiculo, traccion } = req.body;
+            yield vehiculos_1.Vehiculos.findOneAndUpdate({ _matricula: mat }, { _DNIpropietario: DNIpropietario, _matricula: matricula, _marca: marca, _modelo: modelo, _color: color, _precio: precio, _tipoVehiculo: tipoVehiculo, _traccion: traccion }, { new: true })
                 .then((doc) => res.send(doc))
                 .catch((err) => res.send("Error: " + err));
             yield database_1.db.desconectarBD();
@@ -281,6 +282,26 @@ class IndexRoutes {
             yield database_1.db.conectarBD();
             const dni = req.params.dni;
             yield clientes_1.Clientes.findOne({ _dni: dni })
+                .then((doc) => res.send(doc))
+                .catch((err) => res.send("Error: " + err));
+            yield database_1.db.desconectarBD();
+        });
+        this.listarEmpleado = (req, res) => __awaiter(this, void 0, void 0, function* () {
+            yield database_1.db.conectarBD();
+            const dni = req.params.dni;
+            yield empleados_1.Empleados.aggregate([
+                { $match: { _dni: dni } },
+                {
+                    $project: {
+                        _dni: 1,
+                        _nombre: 1,
+                        _tipoEmpleado: 1,
+                        _fechaContratacion: { $dateToString: { format: "%d/%m/%Y", date: "$_fechaContratacion" } },
+                        _sueldoMes: 1,
+                        _horasExtra: 1,
+                    }
+                }
+            ])
                 .then((doc) => res.send(doc))
                 .catch((err) => res.send("Error: " + err));
             yield database_1.db.desconectarBD();
@@ -406,16 +427,18 @@ class IndexRoutes {
         this._router.get("/verClientes", this.listarClientes);
         this._router.get("/verVehiculo/:matricula", this.listarVehiculo);
         this._router.get("/verCliente/:dni", this.listarCliente);
+        this._router.get("/verEmpleado/:dni", this.listarEmpleado);
         this._router.get("/sueldo", this.calcularSueldoAño);
         this._router.get("/valor", this.calcularValorVehiculos);
         this._router.get("/look/:dni", this.look);
         this._router.get("/look2/:matricula", this.look2);
         // UPDATE
         this._router.put("/updateReparacion/:codigo", this.modificarReparacion);
-        this._router.put("/updateVehiculo/:matricula", this.modificarVehiculo);
         this._router.put("/updateCliente/:dni", this.modificarCliente);
         this._router.put("/updateDeportivo/:matricula", this.modificarDeportivo);
         this._router.put("/updateTodoterreno/:matricula", this.modificarTodoterreno);
+        this._router.put("/updateMecanico/:dni", this.modificarMecanico);
+        this._router.put("/updatePintor/:dni", this.modificarPintor);
         // DELETE
         this._router.delete("/deleteReparacion/:code", this.borrarReparacion);
         this._router.delete("/deleteVehiculo/:matricula", this.borrarVehiculo);

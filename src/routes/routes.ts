@@ -177,29 +177,6 @@ class IndexRoutes {
     await db.desconectarBD();
   };
 
-  private modificarVehiculo = async (req: Request, res: Response) => {
-    await db.conectarBD();
-    const mat = req.params.matricula;
-    const { DNIpropietario, matricula, modelo, marca, color, precio, tipoVehiculo } = req.body;
-    await Vehiculos.findOneAndUpdate(
-      { _matricula: mat },
-      {
-        _DNIpropietario: DNIpropietario,
-        _matricula: matricula,
-        _marca: marca,
-        _modelo: modelo,
-        _color: color,
-        _precio: precio,
-        _tipoVehiculo: tipoVehiculo,
-      },
-      { new: true }
-    )
-      .then((doc: any) => res.send(doc))
-      .catch((err: any) => res.send("Error: " + err));
-
-    await db.desconectarBD();
-  };
-
   private modificarCliente = async (req: Request, res: Response) => {
     await db.conectarBD();
     const dn = req.params.dni;
@@ -217,11 +194,11 @@ class IndexRoutes {
 
   private modificarDeportivo = async (req: Request, res: Response) => {
     await db.conectarBD();
-    const dn = req.params.dni;
-    const { dni, nombre, telefono } = req.body;
-    await Clientes.findOneAndUpdate(
-      { _dni: dn },
-      { _dni: dni, _nombre: nombre, _telefono: telefono },
+    const mat = req.params.matricula;
+    const { DNIpropietario, matricula, marca, modelo, color, precio, tipoVehiculo, potencia } = req.body;
+    await Vehiculos.findOneAndUpdate(
+      { _matricula: mat },
+      { _DNIpropietario: DNIpropietario, _matricula: matricula, _marca: marca, _modelo: modelo, _color: color, _precio: precio, _tipoVehiculo: tipoVehiculo, _potencia: potencia },
       { new: true }
     )
       .then((doc: any) => res.send(doc))
@@ -232,11 +209,41 @@ class IndexRoutes {
 
   private modificarTodoterreno = async (req: Request, res: Response) => {
     await db.conectarBD();
-    const dn = req.params.dni;
-    const { dni, nombre, telefono } = req.body;
-    await Clientes.findOneAndUpdate(
-      { _dni: dn },
-      { _dni: dni, _nombre: nombre, _telefono: telefono },
+    const mat = req.params.matricula;
+    const { DNIpropietario, matricula, marca, modelo, color, precio, tipoVehiculo, traccion} = req.body;
+    await Vehiculos.findOneAndUpdate(
+      { _matricula: mat },
+      {  _DNIpropietario: DNIpropietario, _matricula: matricula, _marca: marca, _modelo: modelo, _color: color, _precio: precio, _tipoVehiculo: tipoVehiculo, _traccion: traccion },
+      { new: true }
+    )
+      .then((doc: any) => res.send(doc))
+      .catch((err: any) => res.send("Error: " + err));
+
+    await db.desconectarBD();
+  };
+
+  private modificarMecanico = async (req: Request, res: Response) => {
+    await db.conectarBD();
+    const mat = req.params.dni;
+    const { dni, nombre, tipoEmpleado, fechaContratacion, sueldoMes, horasExtra} = req.body;
+    await Empleados.findOneAndUpdate(
+      { _dni: mat },
+      { _dni: dni, _nombre: nombre, _tipoEmpleado: tipoEmpleado, _fechaContratacion: fechaContratacion, _sueldoMes: sueldoMes, _horasExtra: horasExtra },
+      { new: true }
+    )
+      .then((doc: any) => res.send(doc))
+      .catch((err: any) => res.send("Error: " + err));
+
+    await db.desconectarBD();
+  };
+
+  private modificarPintor = async (req: Request, res: Response) => {
+    await db.conectarBD();
+    const mat = req.params.matricula;
+    const { DNIpropietario, matricula, marca, modelo, color, precio, tipoVehiculo, traccion} = req.body;
+    await Vehiculos.findOneAndUpdate(
+      { _matricula: mat },
+      {  _DNIpropietario: DNIpropietario, _matricula: matricula, _marca: marca, _modelo: modelo, _color: color, _precio: precio, _tipoVehiculo: tipoVehiculo, _traccion: traccion },
       { new: true }
     )
       .then((doc: any) => res.send(doc))
@@ -348,6 +355,28 @@ class IndexRoutes {
     await db.conectarBD();
     const dni = req.params.dni;
     await Clientes.findOne({ _dni: dni })
+      .then((doc: any) => res.send(doc))
+      .catch((err: any) => res.send("Error: " + err));
+
+    await db.desconectarBD();
+  };
+
+  private listarEmpleado = async (req: Request, res: Response) => {
+    await db.conectarBD();
+    const dni = req.params.dni;
+    await Empleados.aggregate([
+      { $match : { _dni : dni } },
+      {
+        $project: {
+           _dni:1,
+           _nombre:1,
+           _tipoEmpleado:1,
+           _fechaContratacion: { $dateToString: { format: "%d/%m/%Y", date: "$_fechaContratacion" } },
+           _sueldoMes:1,
+           _horasExtra:1,
+        }
+      }
+    ])
       .then((doc: any) => res.send(doc))
       .catch((err: any) => res.send("Error: " + err));
 
@@ -525,16 +554,18 @@ class IndexRoutes {
     this._router.get("/verClientes", this.listarClientes);
     this._router.get("/verVehiculo/:matricula", this.listarVehiculo);
     this._router.get("/verCliente/:dni", this.listarCliente);
+    this._router.get("/verEmpleado/:dni", this.listarEmpleado);
     this._router.get("/sueldo", this.calcularSueldoAño);
     this._router.get("/valor", this.calcularValorVehiculos);
     this._router.get("/look/:dni", this.look);
     this._router.get("/look2/:matricula", this.look2);
     // UPDATE
     this._router.put("/updateReparacion/:codigo", this.modificarReparacion);
-    this._router.put("/updateVehiculo/:matricula", this.modificarVehiculo);
     this._router.put("/updateCliente/:dni", this.modificarCliente);
     this._router.put("/updateDeportivo/:matricula", this.modificarDeportivo);
     this._router.put("/updateTodoterreno/:matricula", this.modificarTodoterreno);
+    this._router.put("/updateMecanico/:dni", this.modificarMecanico);
+    this._router.put("/updatePintor/:dni", this.modificarPintor);
     // DELETE
     this._router.delete("/deleteReparacion/:code", this.borrarReparacion);
     this._router.delete("/deleteVehiculo/:matricula", this.borrarVehiculo);
