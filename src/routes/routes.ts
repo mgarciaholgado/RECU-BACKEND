@@ -239,11 +239,11 @@ class IndexRoutes {
 
   private modificarPintor = async (req: Request, res: Response) => {
     await db.conectarBD();
-    const mat = req.params.matricula;
-    const { DNIpropietario, matricula, marca, modelo, color, precio, tipoVehiculo, traccion} = req.body;
-    await Vehiculos.findOneAndUpdate(
-      { _matricula: mat },
-      {  _DNIpropietario: DNIpropietario, _matricula: matricula, _marca: marca, _modelo: modelo, _color: color, _precio: precio, _tipoVehiculo: tipoVehiculo, _traccion: traccion },
+    const mat = req.params.dni;
+    const { dni, nombre, tipoEmpleado, fechaContratacion, sueldoMes, empresaContratista} = req.body;
+    await Empleados.findOneAndUpdate(
+      { _dni: mat },
+      { _dni: dni, _nombre: nombre, _tipoEmpleado: tipoEmpleado, _fechaContratacion: fechaContratacion, _sueldoMes: sueldoMes, _empresaContratista: empresaContratista },
       { new: true }
     )
       .then((doc: any) => res.send(doc))

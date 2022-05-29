@@ -187,9 +187,9 @@ class IndexRoutes {
         });
         this.modificarPintor = (req, res) => __awaiter(this, void 0, void 0, function* () {
             yield database_1.db.conectarBD();
-            const mat = req.params.matricula;
-            const { DNIpropietario, matricula, marca, modelo, color, precio, tipoVehiculo, traccion } = req.body;
-            yield vehiculos_1.Vehiculos.findOneAndUpdate({ _matricula: mat }, { _DNIpropietario: DNIpropietario, _matricula: matricula, _marca: marca, _modelo: modelo, _color: color, _precio: precio, _tipoVehiculo: tipoVehiculo, _traccion: traccion }, { new: true })
+            const mat = req.params.dni;
+            const { dni, nombre, tipoEmpleado, fechaContratacion, sueldoMes, empresaContratista } = req.body;
+            yield empleados_1.Empleados.findOneAndUpdate({ _dni: mat }, { _dni: dni, _nombre: nombre, _tipoEmpleado: tipoEmpleado, _fechaContratacion: fechaContratacion, _sueldoMes: sueldoMes, _empresaContratista: empresaContratista }, { new: true })
                 .then((doc) => res.send(doc))
                 .catch((err) => res.send("Error: " + err));
             yield database_1.db.desconectarBD();
