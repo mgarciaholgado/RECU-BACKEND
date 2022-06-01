@@ -5,9 +5,10 @@ export class Reparacion {
     private _CosteBase: number;
 
 
-    constructor(codReparacion:number,matricula:string,nombreReparacion:string,costeBase:number) {
+    constructor(codReparacion:number,matricula:string, nombreReparacion:string,costeBase:number) {
         this._codReparacion = codReparacion;
         this._matricula = matricula;
+        
         this._nombreReparacion = nombreReparacion;
         this._CosteBase = costeBase;
     }
@@ -17,6 +18,8 @@ export class Reparacion {
     get matricula() {
         return this._matricula
     }
+
+  
     get codReparacion() {
         return this._codReparacion
     }

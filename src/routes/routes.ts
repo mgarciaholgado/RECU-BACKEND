@@ -12,9 +12,6 @@ import { Clientes } from "../model/clientes";
 import {
   Empleados,
   tEmpleado,
-  tEmpleado2,
-  tMecanico,
-  tMecanico2,
   tSalario,
 } from "../model/empleados";
 import { Reparaciones } from "../model/reparacion";
@@ -525,6 +522,7 @@ class IndexRoutes {
     await db.desconectarBD();
   };
 
+
   routes() {
     // POST
     this._router.post("/addReparacion", this.agregarReparacion);
@@ -547,6 +545,7 @@ class IndexRoutes {
     this._router.get("/valor", this.calcularValorVehiculos);
     this._router.get("/look/:dni", this.look);
     this._router.get("/look2/:matricula", this.look2);
+    
     // UPDATE
     this._router.put("/updateReparacion/:codigo", this.modificarReparacion);
     this._router.put("/updateCliente/:dni", this.modificarCliente);

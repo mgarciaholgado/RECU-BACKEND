@@ -1,4 +1,3 @@
-import { Number } from "mongoose";
 import { Empleado } from "./empleado";
 
 export class Mecanico extends Empleado {

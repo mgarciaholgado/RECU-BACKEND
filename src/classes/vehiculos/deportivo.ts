@@ -1,5 +1,4 @@
 import { Vehiculo } from "./vehiculo";
-import { Reparacion } from "../reparacion/reparacion";
 
 export class Deportivo extends Vehiculo {
     private _potencia: number;

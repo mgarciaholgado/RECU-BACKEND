@@ -7,6 +7,9 @@ const reparacionesSchema = new Schema({
   _matricula: {
       type: String,
   },
+  _empleado: {
+    type: String,
+},
   _nombreReparacion: {
     type: String
   },
